@@ -2,7 +2,7 @@
 
 GROUP NAME: PDFers
 
-GROUP MEMBERS : Fasih Javed (fasihj2), Mathew Randal (randal3), Amney Gupta (amey2)
+GROUP MEMBERS : Fasih Javed (fasihj2), Mathew Randal (randal3), Amey Gupta (amey2)
 
 GOALS:
 
