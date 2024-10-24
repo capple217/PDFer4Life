@@ -1,6 +1,37 @@
+import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
+
+export component MainWindow inherits Window {
+    width: 900px;
+    height: 1020px;
+
+    VerticalBox {
+        alignment: center;
+        HorizontalBox {
+        
+            Button {
+                width: 100px;
+                height: 200px;
+                text: "Open File";
+                clicked => {
+                    //open system file directory
+                }
+            }
+        }
+        
+        Text {
+            text: "list of files";
+        }
+        
+    }
+}
+
+
+
+/*
 import { Button, VerticalBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
+    always-on-top: false;
     in-out property <int> counter: 42;
     callback request-increase-value();
     VerticalBox {
@@ -16,3 +47,4 @@ export component AppWindow inherits Window {
         }
     }
 }
+*/
