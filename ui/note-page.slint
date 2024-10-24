@@ -1,0 +1,45 @@
+import { TextEdit, Button } from "std-widgets.slint";
+
+component TextEditor inherits Window {
+
+    VerticalLayout {
+        TextEdit {
+            font-size: 14px;
+            height: 80%;
+            width: 50%;
+            text: "This is editable text";
+        }
+
+        // Buttons for saving and loading files
+        VerticalLayout {
+            Button {
+                text: "Save";
+                //clicked => save_clicked();
+            }
+            Button {
+                text: "Load";
+                //clicked => load_clicked();
+            }
+        }
+
+        TouchArea {
+            moved => {
+                self.width = self.mouse-x;
+            }
+        }
+    }
+    
+}
+
+component PDFRender inherits Window {
+    Rectangle { border-color: yellow; min-width: 20px;border-width: 2px; }
+}
+
+export component SplitWindow inherits Window {
+    width: 500px;
+    height: 250px;
+    HorizontalLayout {
+        PDFRender{}
+        TextEditor{}
+    }
+}
