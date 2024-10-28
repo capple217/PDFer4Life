@@ -7,8 +7,8 @@ slint::include_modules!();
 fn main() -> Result<(), slint::PlatformError> {
     let main_window = MainWindow::new()?;
 
-    main_window.on_open_file({
-        Files::OpenFile(); // 
+    main_window.on_open_file(move || {
+        Files::open_file(); 
     });
 
     main_window.run()
@@ -20,7 +20,7 @@ use native_dialog::FileDialog;
 pub struct Files;
 
 impl Files {
-    pub fn OpenFile() {
+    pub fn open_file() {
         if let Some(path) = FileDialog::new()
         .set_location("~/Desktop")
         .add_filter("PNG Image", &["png"])

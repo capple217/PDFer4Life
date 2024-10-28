@@ -1,7 +1,7 @@
 import {Button, VerticalBox, HorizontalBox} from "std-widgets.slint";
 
 export component MainWindow inherits Window {
-    callback on_open_file();
+    callback open-file();
     VerticalBox {
         alignment: center;
         HorizontalBox {
@@ -10,7 +10,7 @@ export component MainWindow inherits Window {
                 width: 100px;
                 height: 200px;
                 text: "Open File";
-                clicked => {root.on_open_file();}
+                clicked => {root.open-file();}
             }
         }
         Text {
