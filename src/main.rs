@@ -3,11 +3,12 @@
 
 use std::error::Error;
 
-mod notePage;
+mod globalCallbacks;
 
 slint::include_modules!();
 
 fn main() -> Result<(), Box<dyn Error>> {
+    globalCallbacks::defGlobalCallbacks();
     let ui = AppWindow::new()?;
 
     ui.on_request_increase_value({
@@ -20,7 +21,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     ui.run()?;
 
-    notePage::openNotePage(); 
+    let sw = SplitWindow::new()?;
+
+    sw.run();
 
     Ok(())
 }
