@@ -1,8 +1,10 @@
+slint::include_modules!();
 
-
-fn openNotePage() -> Result<(), slint::PlatformError>{
+pub fn openNotePage() -> Result<(), slint::PlatformError>{
     let ui = SplitWindow::new()?;
 
+    ui.
 
-    
+    ui.run();
+    Ok(())
 }

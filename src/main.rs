@@ -3,6 +3,8 @@
 
 use std::error::Error;
 
+mod notePage;
+
 slint::include_modules!();
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -17,6 +19,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     ui.run()?;
+
+    notePage::openNotePage(); 
 
     Ok(())
 }
