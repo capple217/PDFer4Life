@@ -1,0 +1,31 @@
+import { TextEdit, Button } from "std-widgets.slint";
+
+export component TextEditor inherits Window {
+
+    VerticalLayout {
+        TextEdit {
+            font-size: 14px;
+            height: 80%;
+            width: 50%;
+            text: "This is editable text";
+        }
+
+        // Buttons for saving and loading files
+        VerticalLayout {
+            Button {
+                text: "Save";
+                //clicked => save_clicked();
+            }
+            Button {
+                text: "Load";
+                //clicked => load_clicked();
+            }
+        }
+
+        TouchArea {
+            moved => {
+                self.width = self.mouse-x;
+            }
+        }
+    }
+}

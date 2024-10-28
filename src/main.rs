@@ -1,17 +1,28 @@
 // Prevent console window in addition to Slint window in Windows release builds when, e.g., starting the app via file manager. Ignored on other platforms.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+//imports
+use std::error::Error;
 slint::include_modules!();
 
 
 fn main() -> Result<(), slint::PlatformError> {
+    /*
+    Window: main page
+    */
     let main_window = MainWindow::new()?;
+    main_window.run();
 
+    //functions for callback
     main_window.on_open_file(move || {
         Files::open_file(); 
     });
 
-    main_window.run()
+    /*
+    Window: notes splitscreen page
+    */
+    let notes_window = SplitWindow::new()?;
+    notes_window.run();
 }
 
 use native_dialog::FileDialog;
@@ -32,7 +43,7 @@ impl Files {
     }
 }
 
-
+// //example
 // slint::include_modules!();
 
 // fn main() -> Result<(), Box<dyn Error>> {
