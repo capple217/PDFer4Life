@@ -32,4 +32,4 @@ Group Members: Fasih Javed (fasihj2), Mathew Randal (randal3), Amey Gupta (amey2
 
  - The idea behind this project partially stems from Obsidian’s pdfs split screen view
 
-![alt text](../assets/obsidian_inspiration.png)
+![alt text](./assets/obsidian_inspiration.png)
