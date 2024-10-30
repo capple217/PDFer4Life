@@ -4,6 +4,7 @@
 //imports
 use std::error::Error;
 slint::include_modules!();
+mod file_management;
 
 
 fn main() -> Result<(), slint::PlatformError> {
@@ -15,7 +16,8 @@ fn main() -> Result<(), slint::PlatformError> {
 
     //functions for callback
     main_window.on_open_file(move || {
-        Files::open_file(); 
+        println!("i came here");
+        file_management::Files::open_file(); 
     });
 
     /*
@@ -23,41 +25,6 @@ fn main() -> Result<(), slint::PlatformError> {
     */
     let notes_window = SplitWindow::new()?;
     notes_window.run();
+
+    Ok(())
 }
-
-use native_dialog::FileDialog;
-
-#[derive(Default)]
-pub struct Files;
-
-impl Files {
-    pub fn open_file() {
-        if let Some(path) = FileDialog::new()
-        .set_location("~/Desktop")
-        .add_filter("PNG Image", &["png"])
-        .add_filter("JPEG Image", &["jpg", "jpeg"])
-        .show_open_single_file()
-        .unwrap() {
-            println!("Selected file: {:?}", path);
-        }
-    }
-}
-
-// //example
-// slint::include_modules!();
-
-// fn main() -> Result<(), Box<dyn Error>> {
-//     let ui = AppWindow::new()?;
-
-//     ui.on_request_increase_value({
-//         let ui_handle = ui.as_weak();
-//         move || {
-//             let ui = ui_handle.unwrap();
-//             ui.set_counter(ui.get_counter() + 1);
-//         }
-//     });
-
-//     ui.run()?;
-
-//     Ok(())
-// }
