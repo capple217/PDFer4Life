@@ -2,7 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 //imports
-use std::error::Error;
 slint::include_modules!();
 mod file_management;
 
@@ -11,20 +10,30 @@ fn main() -> Result<(), slint::PlatformError> {
     /*
     Window: main page
     */
-    let main_window = MainWindow::new()?;
-    main_window.run();
-
-    //functions for callback
-    main_window.on_open_file(move || {
-        println!("i came here");
-        file_management::Files::open_file(); 
-    });
+    let main_window = MainWindow::new().unwrap();
 
     /*
     Window: notes splitscreen page
     */
-    let notes_window = SplitWindow::new()?;
-    notes_window.run();
+    //let notes_window = SplitWindow::new()?;
+    //notes_window.run();
+
+    //functions for callback
+
+    // main_window.on_open_file({
+    //     let main_window_weak = main_window.as_weak();
+    //     let notes_window_weak = notes_window.as_weak();
+        
+    //     move || {
+
+    //     file_management::Files::open_file();
+    //     main_window_weak.unwrap().hide(); 
+    //     notes_window_weak.unwrap().run();
+
+    //     }
+    // });
+
+    main_window.run();
 
     Ok(())
 }
