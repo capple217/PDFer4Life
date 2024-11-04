@@ -10,7 +10,7 @@ fn main() -> Result<(), slint::PlatformError> {
     /*
     Window: main page
     */
-    let main_window = MainWindow::new().unwrap();
+    let app = App::new().unwrap();
 
     /*
     Window: notes splitscreen page
@@ -33,7 +33,7 @@ fn main() -> Result<(), slint::PlatformError> {
     //     }
     // });
 
-    main_window.run();
+    app.run();
 
     Ok(())
 }

@@ -1,6 +1,7 @@
 import {Button, VerticalBox, HorizontalBox} from "std-widgets.slint";
+import {Page} from "common.slint";
 
-export component OpeningPage inherits Window {
+export component OpeningPage inherits Page {
     callback open-file();
     VerticalBox {
         alignment: center;
