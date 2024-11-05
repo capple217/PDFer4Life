@@ -25,7 +25,17 @@ fn main() -> Result<(), slint::PlatformError> {
     //functions for callback
 
     app.global::<AppService>().on_open_file(|| {
-        println!("On button clicked: id");
+        let app_weak = app.as_weak();
+        
+        move || {
+            let app = app_weak.unwrap();
+            
+        }
+    });
+
+    app.global::<BackendTextEditor>().on_save_file(|file_name, text| {
+        println!("ran2");
+        println!("here is the text for {}: {}", file_name, text);
     });
 
     // on_open_file({

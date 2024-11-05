@@ -1,7 +1,8 @@
 import { TextEdit, Button } from "std-widgets.slint";
 import { BackendTextEditor } from "global-callbacks.slint";
+import {Page} from "common.slint";
 
-export component TextEditor inherits Window {
+export component TextEditor inherits Page {
 
     VerticalLayout {
         TextEdit {
@@ -16,7 +17,7 @@ export component TextEditor inherits Window {
             Button {
                 text: "Save";
                 clicked => {
-                    BackendTextEditor.save-file("notes.txt");
+                    BackendTextEditor.save-file("notes.txt", "this is my text that I inputted");
                 }
             }
             Button {
