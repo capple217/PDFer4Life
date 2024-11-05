@@ -20,15 +20,18 @@ fn main() -> Result<(), slint::PlatformError> {
 
     //functions for callback
 
-    // main_window.on_open_file({
-    //     let main_window_weak = main_window.as_weak();
-    //     let notes_window_weak = notes_window.as_weak();
+    app.global::<AppService>().on_open_file(|| {
+        println!("On button clicked: id");
+    });
+
+    // on_open_file({
+    //     let app_weak = app.as_weak();
         
     //     move || {
 
     //     file_management::Files::open_file();
-    //     main_window_weak.unwrap().hide(); 
-    //     notes_window_weak.unwrap().run();
+        
+    //     app_weak.unwrap().active_page = 1;
 
     //     }
     // });
