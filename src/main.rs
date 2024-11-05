@@ -3,7 +3,7 @@
 
 //imports
 slint::include_modules!();
-mod file_management;
+mod interface;
 
 
 fn main() -> Result<(), slint::PlatformError> {
@@ -12,20 +12,22 @@ fn main() -> Result<(), slint::PlatformError> {
     */
     let app = App::new().unwrap();
 
-    //functions for callback
+    /*
+    File Manager
+    */
+    let file_manager = interface::FileManager::new();
 
+
+    //function for opening new pdf callback
     app.global::<AppService>().on_open_file({
         let app_weak = app.as_weak();
         
         move || {
             let app = app_weak.unwrap();
-            file_management::Files::open_file();
+            file_manager.add_file();
             app.set_active_page(1);
-            println!("On button clicked: id");
         }
     });
 
-    app.run();
-
-    Ok(())
+    app.run()
 }

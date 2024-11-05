@@ -1,9 +1,10 @@
-
+use native_dialog::FileDialog;
 use std::time::{SystemTime, UNIX_EPOCH};
 // Create a map (name : file path)
 // functionality to rename, delete, and view all files
 // last read
 
+#[derive(Default)]
 
 struct FileInfo {
     name: String, 
@@ -29,12 +30,23 @@ struct FileManager{
 }
 
 impl FileManager{
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {files: Vec::new()}
    }
     
-    fn add_file(&mut self, filename: &str, name: &str) {
-        let file = FileInfo::new(filename, name);
+    pub fn add_file(&mut self) {
+        
+        //open file from system
+        if let Some(file_path) = FileDialog::new()
+        .set_location("~/Desktop")
+        .add_filter("PDF File", &["pdf"])
+        .show_open_single_file()
+        .unwrap() {
+            println!("Selected file: {:?}", file_path);
+        }
+
+        let name = "NaN";
+        let file = FileInfo::new(file_path, name);
         self.files.push(file);
     }
     
