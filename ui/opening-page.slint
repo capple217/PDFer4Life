@@ -1,0 +1,20 @@
+import {Button, VerticalBox, HorizontalBox} from "std-widgets.slint";
+import {Page, AppService} from "common.slint";
+
+export component OpeningPage inherits Page {
+    VerticalBox {
+        alignment: center;
+        HorizontalBox {
+        
+            Button {
+                width: 100px;
+                height: 200px;
+                text: "Open File";
+                clicked => {AppService.open-file();}
+            }
+        }
+        Text {
+            text: "list of files";
+        }
+    }
+}
