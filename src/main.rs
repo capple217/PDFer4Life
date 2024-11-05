@@ -12,33 +12,22 @@ mod file_management;
 
 fn main() -> Result<(), slint::PlatformError> {
     /*
-    Window: main page
+    Application Window
     */
     let app = App::new().unwrap();
 
-    /*
-    Window: notes splitscreen page
-    */
-    //let notes_window = SplitWindow::new()?;
-    //notes_window.run();
-
     //functions for callback
 
-    app.global::<AppService>().on_open_file(|| {
-        println!("On button clicked: id");
+    app.global::<AppService>().on_open_file({
+        let app_weak = app.as_weak();
+        
+        move || {
+            let app = app_weak.unwrap();
+            file_management::Files::open_file();
+            app.set_active_page(1);
+            println!("On button clicked: id");
+        }
     });
-
-    // on_open_file({
-    //     let app_weak = app.as_weak();
-        
-    //     move || {
-
-    //     file_management::Files::open_file();
-        
-    //     app_weak.unwrap().active_page = 1;
-
-    //     }
-    // });
 
     app.run();
 

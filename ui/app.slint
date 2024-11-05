@@ -3,18 +3,14 @@ import {OpeningPage} from "opening-page.slint";
 import {SplitPage} from "split-page.slint";
 
 export component App inherits Window {
-    property <int> active-page : 0;
+    in property <int> active-page : 0;
 
     preferred-width: 700px;
     preferred-height: 500px;
 
-    if (active-page == 0) : OpeningPage {
-        //opacity: active-page == 0 ? 1 : 0;
-    }
+    if (active-page == 0) : OpeningPage {}
 
-    if (active-page == 1) : SplitPage {
-        //opacity: active-page == 1 ? 1 : 0;
-    }
+    if (active-page == 1) : SplitPage {}
 
 
 }
