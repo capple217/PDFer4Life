@@ -19,6 +19,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     });
 
+    ui.global::<BackendTextEditor>().on_save_file(|file_name| {
+        println!("ran2");
+        println!("here is the text for {}", file_name);
+    });
+
     ui.run()?;
 
     let sw = SplitWindow::new()?;

@@ -1,4 +1,5 @@
 import { Button, VerticalBox } from "std-widgets.slint";
+import {BackendTextEditor} from "global-callbacks.slint";
 
 export component AppWindow inherits Window {
     in-out property <int> counter: 42;
@@ -11,6 +12,7 @@ export component AppWindow inherits Window {
         Button {
             text: "Increase value";
             clicked => {
+                BackendTextEditor.save-file("text.txt");
                 root.request-increase-value();
             }
         }
