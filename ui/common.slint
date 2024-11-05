@@ -1,0 +1,44 @@
+export global AppService  {
+    // This callback can be implemented in native code using the Slint API
+    callback open-file();
+
+}
+
+export component Page inherits Rectangle {
+    // in property <string> header <=> h.text;
+    // in property <bool> has-back-button: false;
+
+    // callback back;
+    // // Stop accidentally getting clicks dur to animation only moving page half way offscreen
+    // visible: self.opacity > 0;
+
+    // TouchArea { } // protect underneath controls
+
+
+    // if (root.has-back-button) : Image {
+    //     x:0;
+    //     source: @image-url("images/back.svg");
+    //     image-fit: contain;
+    //     y: h.y + (h.height - self.height) / 2;
+    //     width: 14px;
+    //     height: 24px;
+
+    //     TouchArea {
+    //         clicked => { root.back() }
+
+    //         x:0;
+    //         width: 150%;
+    //     }
+    // }
+
+    // h := Text {
+    //     font-weight: 900;
+    //     y: 46px - self.font-size;
+    //     x: root.has-back-button ? 24px + 16px : 0px;
+    //     // Allow clicking on the title as well to get back easier when just
+    //     // using fingers on a small screen.
+    //     if (root.has-back-button) : TouchArea {
+    //         clicked => { root.back() }
+    //     }
+    // }
+}
