@@ -20,8 +20,15 @@ fn main() -> Result<(), slint::PlatformError> {
 
     //functions for callback
 
-    app.global::<AppService>().on_open_file(|| {
-        println!("On button clicked: id");
+    app.global::<AppService>().on_open_file({
+        let app_weak = app.as_weak();
+        
+        move || {
+            let app = app_weak.unwrap();
+            file_management::Files::open_file();
+            app.set_active_page(1);
+            println!("On button clicked: id");
+        }
     });
 
     // on_open_file({
