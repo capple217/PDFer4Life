@@ -4,11 +4,9 @@
 //imports
 use std::error::Error;
 
-mod globalCallbacks;
-
 slint::include_modules!();
 mod file_management;
-
+mod globalCallbacks;
 
 fn main() -> Result<(), slint::PlatformError> {
     /*
@@ -17,6 +15,8 @@ fn main() -> Result<(), slint::PlatformError> {
     let app = App::new().unwrap();
 
     //functions for callback
+    let app_weak = app.as_weak();
+    // globalCallbacks::defGlobalCallbacks(app_weak.unwrap());
 
     app.global::<AppService>().on_open_file({
         let app_weak = app.as_weak();
@@ -27,6 +27,11 @@ fn main() -> Result<(), slint::PlatformError> {
             app.set_active_page(1);
             println!("On button clicked: id");
         }
+    });
+
+    app.global::<BackendTextEditor>().on_save_file(|file_name, text| {
+        println!("ran2");
+        println!("here is the text for {}: {}", file_name, text);
     });
 
     app.run();
