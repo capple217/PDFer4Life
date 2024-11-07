@@ -16,6 +16,8 @@ fn main() -> Result<(), slint::PlatformError> {
 
     //functions for callback
     let app_weak = app.as_weak();
+
+    // If we find a way to define callbacks in a different file: 
     // globalCallbacks::defGlobalCallbacks(app_weak.unwrap());
 
     app.global::<AppService>().on_open_file({
@@ -30,8 +32,19 @@ fn main() -> Result<(), slint::PlatformError> {
     });
 
     app.global::<BackendTextEditor>().on_save_file(|file_name, text| {
-        println!("ran2");
-        println!("here is the text for {}: {}", file_name, text);
+        match file_management::write_to_file(file_name.as_str(), text.as_str()) {
+            Ok(_) => println!("File Saved"),
+            Err(e) => eprintln!("Error saving file: {}", e),
+        }
+    });
+
+    app.global::<BackendTextEditor>().on_read_file(|file_name| {
+        let mut text = "".to_string();
+        match file_management::read_file(file_name.as_str()) {
+            Ok(txt) => text = txt,
+            Err(e) => eprintln!("Error loading file: {}", e),
+        }
+        return text.to_string().into();
     });
 
     app.run();

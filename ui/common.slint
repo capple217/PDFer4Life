@@ -4,6 +4,15 @@ export global AppService  {
 
 }
 
+export global BackendTextEditor {
+    pure callback save-file(string, string);
+    pure callback read-file(string) -> string;
+}
+
+export global BackendPDF {
+    pure callback open-pdf(string);
+}
+
 export component Page inherits Rectangle {
     // in property <string> header <=> h.text;
     // in property <bool> has-back-button: false;

@@ -1,18 +1,17 @@
 import { TextEdit, Button } from "std-widgets.slint";
-import { BackendTextEditor } from "global-callbacks.slint";
-import {Page} from "common.slint";
+import {Page, BackendTextEditor} from "common.slint";
 
 export component TextEditor inherits Page {
-    out property <string> notes-text
+    in-out property <string> notes-text: BackendTextEditor.read-file("notes.txt");
 
     VerticalLayout {
         TextEdit {
             font-size: 14px;
             height: 80%;
             width: 50%;
-            text: "This is editable text";
-            edited => {
-
+            text: notes-text;
+            edited(text) => {
+                notes-text = text;
             }
         }
 
@@ -21,12 +20,14 @@ export component TextEditor inherits Page {
             Button {
                 text: "Save";
                 clicked => {
-                    BackendTextEditor.save-file("notes.txt", "this is my text that I inputted");
+                    BackendTextEditor.save-file("notes.txt", notes-text);
                 }
             }
             Button {
-                text: "Load";
-                //clicked => load_clicked();
+                text: "Load File";
+                clicked => {
+                    notes-text = BackendTextEditor.read-file("notes.txt");
+                }
             }
         }
 
