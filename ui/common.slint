@@ -7,6 +7,7 @@ export global AppService  {
 export global BackendTextEditor {
     pure callback save-file(string, string);
     pure callback read-file(string) -> string;
+    pure callback open-text-file() -> string;
 }
 
 export global BackendPDF {

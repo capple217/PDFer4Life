@@ -18,14 +18,15 @@ impl Files {
             println!("Selected file: {:?}", path);
         }
     }
-    pub fn open_file_txt() {
-        if let Some(path) = FileDialog::new()
+    pub fn open_file_txt() -> String {
+        if let Some(file_path) = FileDialog::new()
         .set_location("~/Desktop")
         .add_filter("PNG Image", &["txt"])
         .show_open_single_file()
         .unwrap() {
-            println!("Selected file: {:?}", path);
+            return file_path.into_os_string().into_string().unwrap();
         }
+        return "err".to_string();
     }
 }
 

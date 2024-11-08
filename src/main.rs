@@ -31,6 +31,12 @@ fn main() -> Result<(), slint::PlatformError> {
         }
     });
 
+
+    // let mut text_file_path:String;
+    app.global::<BackendTextEditor>().on_open_text_file(||{
+        file_management::Files::open_file_txt().into()
+    });
+
     app.global::<BackendTextEditor>().on_save_file(|file_name, text| {
         match file_management::write_to_file(file_name.as_str(), text.as_str()) {
             Ok(_) => println!("File Saved"),
@@ -46,6 +52,7 @@ fn main() -> Result<(), slint::PlatformError> {
         }
         return text.to_string().into();
     });
+
 
     app.run();
 
