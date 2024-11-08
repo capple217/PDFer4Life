@@ -24,7 +24,10 @@ impl Files {
         .add_filter("PNG Image", &["txt"])
         .show_open_single_file()
         .unwrap() {
-            return file_path.into_os_string().into_string().unwrap();
+            match file_path.into_os_string().into_string(){
+                Ok(x) => return x,
+                Err(_) => return "err".to_string()
+            }
         }
         return "err".to_string();
     }

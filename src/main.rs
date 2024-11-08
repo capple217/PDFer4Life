@@ -45,6 +45,10 @@ fn main() -> Result<(), slint::PlatformError> {
     });
 
     app.global::<BackendTextEditor>().on_read_file(|file_name| {
+        if file_name == "err".to_string(){
+            eprintln!("Error opening text file");
+            return "".to_string().into();
+        }
         let mut text = "".to_string();
         match file_management::read_file(file_name.as_str()) {
             Ok(txt) => text = txt,
