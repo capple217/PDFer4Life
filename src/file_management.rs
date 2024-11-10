@@ -21,7 +21,7 @@ impl Files {
     pub fn open_file_txt() -> String {
         if let Some(file_path) = FileDialog::new()
         .set_location("~/Desktop")
-        .add_filter("PNG Image", &["txt"])
+        .add_filter("Text file", &["txt"])
         .show_open_single_file()
         .unwrap() {
             match file_path.into_os_string().into_string(){

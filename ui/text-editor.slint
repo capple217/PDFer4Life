@@ -21,6 +21,9 @@ export component TextEditor inherits Page {
             Button {
                 text: "Save";
                 clicked => {
+                    if(txt-file-path == ""){
+                        txt-file-path = BackendTextEditor.open-text-file();
+                    }
                     BackendTextEditor.save-file(txt-file-path, notes-text);
                 }
             }

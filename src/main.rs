@@ -6,7 +6,6 @@ use std::error::Error;
 
 slint::include_modules!();
 mod file_management;
-mod globalCallbacks;
 
 fn main() -> Result<(), slint::PlatformError> {
     /*
