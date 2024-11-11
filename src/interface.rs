@@ -6,7 +6,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Default)]
 
-struct FileInfo {
+pub struct FileInfo {
     name: String, 
     filepath: String,
     last_read: u64,
@@ -14,25 +14,26 @@ struct FileInfo {
 }
 
 impl FileInfo {
-fn new_file(filename: &str, name: &str) -> Self {
-        let now = SystemTime::now().duration_since(UNIX_EPOCH).as_secs();
-        Fileinfo {
-            name,
-            filename,
+fn new(filename: &str, name: &str) -> Self {
+        let now = SystemTime::now();
+        //.duration_since(UNIX_EPOCH).as_days();
+        Self {
+            name: name.to_string(),
+            filepath: filename.to_string(),
             last_read: now,
             page_num: 0,
         }
     }
 }
 
-struct FileManager{
-    files: Vec<FileInfo>;
+pub struct FileManager{
+    files: Vec<FileInfo>
 }
 
 impl FileManager{
     pub fn new() -> Self {
         Self {files: Vec::new()}
-   }
+    }
     
     pub fn add_file(&mut self) {
         
@@ -42,12 +43,11 @@ impl FileManager{
         .add_filter("PDF File", &["pdf"])
         .show_open_single_file()
         .unwrap() {
+            let name = "NaN";
+            let file = FileInfo::new(file_path, name);
+            self.files.push(file);
             println!("Selected file: {:?}", file_path);
         }
-
-        let name = "NaN";
-        let file = FileInfo::new(file_path, name);
-        self.files.push(file);
     }
     
     fn delete_file(&mut self, name: &str) {

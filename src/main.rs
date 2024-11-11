@@ -4,6 +4,7 @@
 //imports
 slint::include_modules!();
 mod interface;
+use std::sync::{Arc, Mutex};
 
 
 fn main() -> Result<(), slint::PlatformError> {
@@ -15,16 +16,16 @@ fn main() -> Result<(), slint::PlatformError> {
     /*
     File Manager
     */
-    let file_manager = interface::FileManager::new();
+    let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
 
 
     //function for opening new pdf callback
     app.global::<AppService>().on_open_file({
         let app_weak = app.as_weak();
-        
+        let cloned_file_manager = file_manager.clone();
         move || {
             let app = app_weak.unwrap();
-            file_manager.add_file();
+            cloned_file_manager.add_file();
             app.set_active_page(1);
         }
     });
