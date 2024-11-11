@@ -6,7 +6,7 @@ export component TextEditor inherits Page {
     out property <string> txt-file-path: "";
 
     VerticalLayout {
-        TextEdit {
+        TE:=TextEdit {
             font-size: 14px;
             height: 80%;
             width: 50%;
@@ -30,8 +30,12 @@ export component TextEditor inherits Page {
             Button {
                 text: "Load File";
                 clicked => {
+                    if(txt-file-path != ""){
+                        BackendTextEditor.save-file(txt-file-path, notes-text);
+                    }
                     txt-file-path = BackendTextEditor.open-text-file();
                     notes-text = BackendTextEditor.read-file(txt-file-path);
+                    TE.text = notes-text;
                 }
             }
         }
