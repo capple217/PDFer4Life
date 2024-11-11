@@ -25,7 +25,7 @@ fn main() -> Result<(), slint::PlatformError> {
         let cloned_file_manager = file_manager.clone();
         move || {
             let app = app_weak.unwrap();
-            cloned_file_manager.add_file();
+            cloned_file_manager.unwrap().lock().unwrap().add_file();
             app.set_active_page(1);
         }
     });

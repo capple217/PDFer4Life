@@ -43,7 +43,7 @@ impl FileManager{
         .add_filter("PDF File", &["pdf"])
         .show_open_single_file()
         .unwrap() {
-            let name = "NaN";
+            let name = file_path.file_name().unwrap().as_str();
             let file = FileInfo::new(file_path, name);
             self.files.push(file);
             println!("Selected file: {:?}", file_path);
