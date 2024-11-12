@@ -35,7 +35,7 @@ impl FileManager{
         Self {files: Vec::new()}
     }
     
-    pub fn add_file(&mut self) {
+    pub fn add_file(&mut self) -> bool {
         
         //open file from system
         if let Some(file_path) = FileDialog::new()
@@ -47,6 +47,9 @@ impl FileManager{
             let file = FileInfo::new(file_path, name);
             self.files.push(file);
             println!("Selected file: {:?}", file_path);
+            return true;
+        } else {
+            return false;
         }
     }
     
