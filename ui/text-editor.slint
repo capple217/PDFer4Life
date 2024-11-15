@@ -4,38 +4,39 @@ import {Page, BackendTextEditor} from "common.slint";
 export component TextEditor inherits Page {
     in-out property <string> notes-text: "";
     in-out property <string> txt-file-path: "";
-    in-out property <int> font-size:12;
+    in-out property <int> text-font-size:12;
 
     VerticalLayout {
-        HorizontalLayout { // font settings
+        HorizontalLayout { // font settings, save & load
             // change font
-
-
-            // change font size
-            HorizontalLayout {
-                // Type font
-                VerticalLayout { // +/- button
-                    Button {
-
-                    }
-                    Button {
-
-                    }
+            Font:=TextEdit {
+                width: 10%;
+                text: text-font-size;
+                edited(text) => {
+                    text-font-size = BackendTextEditor.set-font-size(text, text-font-size);
+                    Font.text = text-font-size;
+                    TE.font-size = text-font-size * 1px;
                 }
             }
-        }
-        TE:=TextEdit {
-            font-size: 14px;
-            height: 80%;
-            width: 50%;
-            text: notes-text;
-            edited(text) => {
-                notes-text = text;
+            Button {
+                text: "+";
+                width: 10%;
+                clicked => {
+                    text-font-size += 1;
+                    TE.font-size = text-font-size * 1px;
+                }
             }
-        }
-
-        // Buttons for saving and loading files
-        VerticalLayout {
+            Button {
+                text: "-";
+                width: 10%;
+                clicked => {
+                    text-font-size -= 1;
+                    TE.font-size = text-font-size * 1px;
+                }
+            }
+            Rectangle {
+                width:20%;
+            }
             Button {
                 text: "Save";
                 clicked => {
@@ -55,6 +56,15 @@ export component TextEditor inherits Page {
                     notes-text = BackendTextEditor.read-file(txt-file-path);
                     TE.text = notes-text;
                 }
+            }
+        }
+        TE:=TextEdit {
+            font-size: text-font-size * 1px;
+            height: 100%;
+            width: 50%;
+            text: notes-text;
+            edited(text) => {
+                notes-text = text;
             }
         }
 

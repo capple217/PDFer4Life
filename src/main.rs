@@ -56,6 +56,29 @@ fn main() -> Result<(), slint::PlatformError> {
         return text.to_string().into();
     });
 
+    app.global::<BackendTextEditor>().on_set_font_size(|new_size, old_font| {
+        let mut numeric = true;
+        let mut font:i32 = 0;
+        for ch in new_size.chars(){
+            if !ch.is_numeric(){
+                numeric = false;
+            }
+            else{
+                font += ch.to_digit().unwrap();
+            }
+        }
+        if !numeric{
+            font = old_font;
+        }
+        if font > 256{
+            return 256;
+        }
+        if font < 0{
+            return 0;
+        }
+        return font;
+    });
+
 
     app.run();
 
