@@ -1,5 +1,3 @@
-use dotenv::dotenv;
-use std::env;
 use pdfium_render::prelude::*;
 
 fn export_pdf_to_jpegs(path: &impl AsRef<Path>, password: Option<&str>) -> Result<(), PdfiumError> {
