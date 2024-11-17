@@ -5,6 +5,8 @@
 slint::include_modules!();
 mod interface;
 use std::sync::{Arc, Mutex};
+use serde_json::{Result, Value};
+use serde::{Deserialize, Serialize};
 
 
 fn main() -> Result<(), slint::PlatformError> {
@@ -16,7 +18,7 @@ fn main() -> Result<(), slint::PlatformError> {
     /*
     File Manager
     */
-    let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
+    let file_manager = Arc::new(interface::FileManager::new());
 
 
     //function for opening new pdf callback
@@ -25,10 +27,24 @@ fn main() -> Result<(), slint::PlatformError> {
         let cloned_file_manager = file_manager.clone();
         move || {
             let app = app_weak.unwrap();
-            if cloned_file_manager.unwrap().lock().unwrap().add_file() {
-`               app.set_active_page(1);
+            if cloned_file_manager.add_file() {
+               app.set_active_page(1);
             }
         }
+    });
+
+    app.on_close_requested({
+        //let app_weak = app.as_weak();
+        let cloned_file_manager = file_manager.clone();
+        move || {
+            //let app = app_weak.unwrap();
+            let files = cloned_file_manager.getFiles();
+
+            let json = serde_json::to_string(&files).unwrap();
+            println!("the json is {}", json);
+            slint::CloseRequestResponse::HideWindow
+        }
+        
     });
 
     app.run()
