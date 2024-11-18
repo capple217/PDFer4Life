@@ -3,6 +3,7 @@
 
 //imports
 use std::error::Error;
+use pdfium_render::prelude::*;
 
 mod globalCallbacks;
 
