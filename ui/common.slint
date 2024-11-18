@@ -12,7 +12,8 @@ export global BackendTextEditor {
 }
 
 export global BackendPDF {
-    pure callback open-pdf(string);
+    pure callback navigate-previous();
+    pure callback navigate-next();
 }
 
 export component Page inherits Rectangle {

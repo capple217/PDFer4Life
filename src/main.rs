@@ -8,6 +8,7 @@ use pdfium_render::prelude::*;
 slint::include_modules!();
 mod interface;
 mod file_management;
+mod pdf_renderer;
 use std::sync::{Arc, Mutex};
 use serde_json::{Result, Value};
 use serde::{Deserialize, Serialize};
@@ -54,6 +55,15 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     // });
 
 
+    //BACKEND PDF
+    // pure callback navigate_previous();
+    // pure callback navigate_next();
+    app.global::<BackendPDF>().on_navigate_previous(||{
+        
+    });
+
+
+    
     /*  CALLBACK:
         Prompt user to select txt file
         Returns path to txt file as String
