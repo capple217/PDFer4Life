@@ -9,25 +9,28 @@ export component PDFRender inherits Window {
     property <bool> has_previous;
     property <bool> has_next;
 
+    callback navigate_previous();
+    callback navigate_next();
+
     VerticalLayout {
-        spacing: 10px; // Adds spacing between elements
+        spacing: 10px;
 
         Rectangle {
             border-color: yellow;
             border-width: 2px;
             min-width: 20px;
-            height: 80%; // Adjust height to allow space for buttons below
+            height: 80%;
 
             Image {
                 source: current_image;
                 width: 100%;
                 height: 100%;
-                keep-aspect-ratio: true; // Ensures image keeps its aspect ratio
+                keep-aspect-ratio: true;
             }
         }
 
         HorizontalLayout {
-            spacing: 10px; // Adds spacing between buttons
+            spacing: 10px;
 
             Button {
                 text: "Previous";
