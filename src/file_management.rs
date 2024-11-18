@@ -18,6 +18,7 @@ impl Files {
             println!("Selected file: {:?}", path);
         }
     }
+
     pub fn open_file_txt() -> String {
         if let Some(file_path) = FileDialog::new()
         .set_location("~/Desktop")
@@ -30,7 +31,8 @@ impl Files {
             }
         }
         return "err".to_string();
-    }
+    }    
+
 }
 
 pub fn write_to_file(filename: &str, text: &str) -> Result<()> {
