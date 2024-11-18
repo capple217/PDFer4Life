@@ -7,11 +7,11 @@ edition = "2021"
 
 [dependencies]
 native-dialog = "0.7.0"
-slint = "1.7.2"
+serde = {version = "1.0.215", features = ["derive"] }
+serde_json = "1.0.133"
+slint = "1.8.0"
 dotenv = "0.15"
 pdfium-render = "0.8.26"
 
 [build-dependencies]
-slint-build = "1.7.2"
-
-
+slint-build = "1.8.0"

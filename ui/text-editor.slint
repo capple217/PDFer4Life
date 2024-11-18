@@ -1,27 +1,83 @@
 import { TextEdit, Button } from "std-widgets.slint";
-import { BackendTextEditor } from "global-callbacks.slint";
+import {Page, BackendTextEditor, CustomButton} from "common.slint";
 
-export component TextEditor inherits Window {
+export component TextEditor inherits Page {
+    in-out property <string> notes-text: "";
+    in-out property <string> txt-file-path: "";
+    in-out property <int> text-font-size:12;
 
     VerticalLayout {
-        TextEdit {
-            font-size: 14px;
-            height: 80%;
-            width: 50%;
-            text: "This is editable text";
-        }
-
-        // Buttons for saving and loading files
-        VerticalLayout {
+        HorizontalLayout { // font settings, save & load
+            // change font
+            Font:=TextEdit {
+                width: 10%;
+                wrap: TextWrap.word-wrap;
+                min-height: 10px;
+                font-size: 12px;
+                horizontal-alignment: TextHorizontalAlignment.center;
+                text: text-font-size;
+                padding: 0px;
+                edited(text) => {
+                    text-font-size = BackendTextEditor.set-font-size(text, text-font-size);
+                    Font.text = text-font-size;
+                    TE.font-size = text-font-size * 1px;
+                }
+            }
+            CustomButton {
+                text: "+";
+                width: 10%;
+                font-size: 20px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                clicked => {
+                    text-font-size += 1;
+                    TE.font-size = text-font-size * 1px;
+                    Font.text = text-font-size;
+                }
+            }
+            CustomButton {
+                text: "-";
+                width: 10%;
+                font-size: 20px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                clicked => {
+                    text-font-size -= 1;
+                    TE.font-size = text-font-size * 1px;
+                    Font.text = text-font-size;
+                }
+            }
+            Rectangle {
+                width:20%;
+            }
             Button {
                 text: "Save";
                 clicked => {
-                    BackendTextEditor.save-file("notes.txt");
+                    if(txt-file-path == ""){
+                        txt-file-path = BackendTextEditor.open-text-file();
+                    }
+                    BackendTextEditor.save-file(txt-file-path, notes-text);
                 }
             }
             Button {
-                text: "Load";
-                //clicked => load_clicked();
+                text: "Load File";
+                clicked => {
+                    if(txt-file-path != ""){
+                        BackendTextEditor.save-file(txt-file-path, notes-text);
+                    }
+                    txt-file-path = BackendTextEditor.open-text-file();
+                    notes-text = BackendTextEditor.read-file(txt-file-path);
+                    TE.text = notes-text;
+                }
+            }
+        }
+        TE:=TextEdit {
+            font-size: text-font-size * 1px;
+            height: 100%;
+            width: 50%;
+            text: notes-text;
+            edited(text) => {
+                notes-text = text;
             }
         }
 
