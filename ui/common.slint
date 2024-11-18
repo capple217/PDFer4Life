@@ -53,3 +53,21 @@ export component Page inherits Rectangle {
     //     }
     // }
 }
+
+export component CustomButton inherits Rectangle {
+    in-out property text <=> txt.text;
+    callback clicked <=> touch.clicked;
+    in-out property font-size <=> txt.font-size;
+    border-radius: root.height / 5;
+    border-width: 1px;
+    border-color: root.background.darker(25%);
+    background: touch.pressed ? #6b8282 : touch.has-hover ? #6c616c :  #456;
+    height: txt.preferred-height * 1.33;
+    min-width: txt.preferred-width + 20px;
+    txt := Text {
+        x: (parent.width - self.width)/2;
+        y: (parent.height - self.height)/2;
+        color: touch.pressed ? #fff : #eee;
+    }
+    touch := TouchArea { }
+}

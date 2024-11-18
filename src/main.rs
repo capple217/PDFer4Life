@@ -60,11 +60,13 @@ fn main() -> Result<(), slint::PlatformError> {
         let mut numeric = true;
         let mut font:i32 = 0;
         for ch in new_size.chars(){
+            font = font * 10;
             if !ch.is_numeric(){
                 numeric = false;
+                break;
             }
             else{
-                font += ch.to_digit().unwrap();
+                font += ch.to_digit(10).unwrap() as i32;
             }
         }
         if !numeric{
@@ -73,8 +75,8 @@ fn main() -> Result<(), slint::PlatformError> {
         if font > 256{
             return 256;
         }
-        if font < 0{
-            return 0;
+        if font <= 0{
+            return 1;
         }
         return font;
     });

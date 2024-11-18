@@ -1,5 +1,5 @@
 import { TextEdit, Button } from "std-widgets.slint";
-import {Page, BackendTextEditor} from "common.slint";
+import {Page, BackendTextEditor, CustomButton} from "common.slint";
 
 export component TextEditor inherits Page {
     in-out property <string> notes-text: "";
@@ -11,27 +11,40 @@ export component TextEditor inherits Page {
             // change font
             Font:=TextEdit {
                 width: 10%;
+                wrap: TextWrap.word-wrap;
+                min-height: 10px;
+                font-size: 12px;
+                horizontal-alignment: TextHorizontalAlignment.center;
                 text: text-font-size;
+                padding: 0px;
                 edited(text) => {
                     text-font-size = BackendTextEditor.set-font-size(text, text-font-size);
                     Font.text = text-font-size;
                     TE.font-size = text-font-size * 1px;
                 }
             }
-            Button {
+            CustomButton {
                 text: "+";
                 width: 10%;
+                font-size: 20px;
+                padding-top: 0px;
+                padding-bottom: 0px;
                 clicked => {
                     text-font-size += 1;
                     TE.font-size = text-font-size * 1px;
+                    Font.text = text-font-size;
                 }
             }
-            Button {
+            CustomButton {
                 text: "-";
                 width: 10%;
+                font-size: 20px;
+                padding-top: 0px;
+                padding-bottom: 0px;
                 clicked => {
                     text-font-size -= 1;
                     TE.font-size = text-font-size * 1px;
+                    Font.text = text-font-size;
                 }
             }
             Rectangle {
