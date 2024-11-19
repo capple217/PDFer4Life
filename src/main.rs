@@ -21,7 +21,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     /*
     File Manager
     */
-    let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
+    let mut file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
 
 
     /*  CALLBACK:
@@ -32,9 +32,14 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         let cloned_file_manager = file_manager.clone();
         move || {
             let app = app_weak.unwrap();
-            if cloned_file_manager.lock().unwrap().add_file() {
+            let mut file_manager = cloned_file_manager.lock().unwrap();
+            if file_manager.add_file() {
                app.set_active_page(1);
             }
+            let files = file_manager.getFiles();
+
+            let json = serde_json::to_string(&files).unwrap();
+            println!("the json is {}", json);
         }
     });
 
