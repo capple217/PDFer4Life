@@ -39,7 +39,7 @@ impl FileManager{
         Self {files: Vec::new()}
     }
     
-    pub fn add_file(&mut self) -> bool {
+    pub fn add_file(&mut self) -> Result<String, String> {
         
         //open file from system
         if let Some(file_path) = FileDialog::new()
@@ -51,9 +51,9 @@ impl FileManager{
             let file = FileInfo::new(file_path.to_str().unwrap(), name);
             self.files.push(file);
             println!("Selected file: {:?}", file_path);
-            return true;
+            Ok(file_path.to_str().unwrap().to_string())
         } else {
-            return false;
+            Err("".to_string())
         }
     }
     

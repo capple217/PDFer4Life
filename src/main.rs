@@ -24,6 +24,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     File Manager
     */
     let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
+    let mut path: String;
 
 
     /*  CALLBACK:
@@ -34,11 +35,17 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         let cloned_file_manager = file_manager.clone();
         move || {
             let app = app_weak.unwrap();
-            if cloned_file_manager.lock().unwrap().add_file() {
-               app.set_active_page(1);
+            match cloned_file_manager.lock().unwrap().add_file() {
+                Ok(var1) -> {path = var1;
+                            app.set_active_page(1);
+                },
+                Err(var2) -> path = var2 
             }
         }
     });
+    
+    //  Initialize pdf_renderer after given file file path
+    let pdfer = pdf_renderer::PDFViewer::new(path);
 
     // app.on_close_requested({
     //     //let app_weak = app.as_weak();
@@ -59,9 +66,13 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     // pure callback navigate_previous();
     // pure callback navigate_next();
     app.global::<BackendPDF>().on_navigate_previous(||{
-        
+        pdfer.navigate_previous()
     });
 
+
+    app.global::<BackendPDF>().on_navigate_next(||{
+        pdfer.navigate_next()
+    });
 
     
     /*  CALLBACK:
