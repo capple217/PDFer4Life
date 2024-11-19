@@ -45,7 +45,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     });
     
     //  Initialize pdf_renderer after given file file path
-    let pdfer = pdf_renderer::PDFViewer::new(path);
+    let pdfer = pdf_renderer::PDFViewer::new(&path);
 
     // app.on_close_requested({
     //     //let app_weak = app.as_weak();

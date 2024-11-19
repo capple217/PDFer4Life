@@ -32,7 +32,7 @@ impl PDFViewer {
     }
 
     pub fn navigate_next(&mut self) {
-        if self.current_page + 1 < self.pdf_document.pages().len() {
+        if self.current_page + 1 < self.pdf_document.pages().len().into() {
             self.current_page += 1;
         }
     }
