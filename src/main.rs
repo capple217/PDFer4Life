@@ -21,8 +21,19 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     /*
     File Manager
     */
-    let mut file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
 
+    let mut initial_file_manager = interface::FileManager::new();
+
+    
+    
+    match file_management::read_file("database.json"){
+        Ok(data) => initial_file_manager.setFiles(serde_json::from_str(data.as_str())?),
+        Err(e) => ()
+    };
+
+    let mut file_manager = Arc::new(Mutex::new(initial_file_manager));
+
+    
 
     /*  CALLBACK:
         Prompts user selects PDF -> switch to text-editor pdf-render splitscreen page
@@ -36,26 +47,27 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
             if file_manager.add_file() {
                app.set_active_page(1);
             }
-            let files = file_manager.getFiles();
-
-            let json = serde_json::to_string(&files).unwrap();
-            println!("the json is {}", json);
         }
     });
 
-    // app.on_close_requested({
-    //     //let app_weak = app.as_weak();
-    //     let cloned_file_manager = file_manager.clone();
-    //     move || {
-    //         //let app = app_weak.unwrap();
-    //         let files = cloned_file_manager.lock().unwrap().getFiles();
+    app.window().on_close_requested({
+        let cloned_file_manager = file_manager.clone();
+        move || {
+            let file_manager = cloned_file_manager.lock().unwrap();
+            let files = file_manager.getFiles();
 
-    //         let json = serde_json::to_string(&files).unwrap();
-    //         println!("the json is {}", json);
-    //         slint::CloseRequestResponse::HideWindow
-    //     }
+            let json = serde_json::to_string(&files).unwrap();
+
+            match file_management::write_to_file("database.json", json.as_str()) {
+                Ok(_) => println!("File Saved"),
+                Err(e) => eprintln!("Error saving file: {}", e),
+            }
+
+            println!("the json is {}", json);
+            slint::CloseRequestResponse::HideWindow
+        }
         
-    // });
+    });
 
 
     /*  CALLBACK:

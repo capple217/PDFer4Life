@@ -69,8 +69,12 @@ impl FileManager{
         // }
     }
 
-    pub fn getFiles(&self) -> &Vec<FileInfo>{
+    pub fn getFiles(&self) -> &Vec<FileInfo> {
         return &self.files;
+    }
+
+    pub fn setFiles(&mut self, data: Vec<FileInfo>) {
+        self.files = data;
     }
 }
 
