@@ -6,7 +6,7 @@ use std::error::Error;
 
 slint::include_modules!();
 mod interface;
-mod file_management;
+mod txt_file;
 use std::sync::{Arc, Mutex};
 use serde_json::{Result, Value};
 use serde::{Deserialize, Serialize};
@@ -75,7 +75,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         Returns path to txt file as String
     */
     app.global::<BackendTextEditor>().on_open_text_file(||{
-        file_management::Files::open_file_txt().into()
+        txt_file::open_file_txt().into()
     });
 
     /*  CALLBACK:
@@ -85,7 +85,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         Returns void
     */
     app.global::<BackendTextEditor>().on_save_file(|file_name, text| {
-        match file_management::write_to_file(file_name.as_str(), text.as_str()) {
+        match txt_file::write_to_file(file_name.as_str(), text.as_str()) {
             Ok(_) => println!("File Saved"),
             Err(e) => eprintln!("Error saving file: {}", e),
         }
@@ -102,7 +102,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
             return "".to_string().into();
         }
         let mut text = "".to_string();
-        match file_management::read_file(file_name.as_str()) {
+        match txt_file::read_file(file_name.as_str()) {
             Ok(txt) => text = txt,
             Err(e) => eprintln!("Error loading file: {}", e),
         }
