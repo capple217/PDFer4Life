@@ -26,7 +26,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
 
     
     
-    match file_management::read_file("database.json"){
+    match txt_file::read_file("database.json"){
         Ok(data) => initial_file_manager.setFiles(serde_json::from_str(data.as_str())?),
         Err(e) => ()
     };
@@ -58,7 +58,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
 
             let json = serde_json::to_string(&files).unwrap();
 
-            match file_management::write_to_file("database.json", json.as_str()) {
+            match txt_file::write_to_file("database.json", json.as_str()) {
                 Ok(_) => println!("File Saved"),
                 Err(e) => eprintln!("Error saving file: {}", e),
             }
