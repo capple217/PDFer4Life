@@ -27,7 +27,9 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     
     
     match txt_file::read_file("database.json"){
-        Ok(data) => initial_file_manager.setFiles(serde_json::from_str(data.as_str())?),
+        Ok(data) => {
+            if (data != "") {initial_file_manager.setFiles(serde_json::from_str(data.as_str())?)}
+        },
         Err(e) => ()
     };
 
