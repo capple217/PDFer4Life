@@ -18,7 +18,7 @@ pub struct FileInfo {
 }
 
 impl FileInfo {
-fn new(filename: &str, name: &str) -> Self {
+    fn new(filename: &str, name: &str) -> Self {
         //let now = SystemTime::now();
         Self {
             name: name.to_string(),
@@ -26,6 +26,14 @@ fn new(filename: &str, name: &str) -> Self {
             //last_read: now,
             page_num: 0,
         }
+    }
+
+    pub fn get_name(&self) -> String {
+        self.name.clone()
+    }
+
+    pub fn get_filepath(&self) -> String {
+        self.filepath.clone()
     }
 }
 

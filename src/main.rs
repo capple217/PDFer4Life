@@ -5,9 +5,11 @@
 use std::error::Error;
 
 slint::include_modules!();
+use slint::VecModel;
 mod interface;
 mod txt_file;
 use std::sync::{Arc, Mutex};
+use std::vec;
 use serde_json::{Result, Value};
 use serde::{Deserialize, Serialize};
 
@@ -49,6 +51,40 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
             if file_manager.add_file() {
                app.set_active_page(1);
             }
+        }
+    });
+
+    /*  CALLBACK:
+        Prompts user selects PDF from recents -> switch to text-editor pdf-render splitscreen page
+    */
+    app.global::<AppService>().on_open_recent_file({
+        let app_weak = app.as_weak();
+        //let cloned_file_manager = file_manager.clone();
+        move |file_path|{
+            let app = app_weak.unwrap();
+            //let mut file_manager = cloned_file_manager.lock().unwrap();
+            app.set_active_page(1);
+            println!("{}", file_path.to_string());
+        }
+    });
+
+    /*  CALLBACK:
+        list recently opened PDFs
+    */
+    app.global::<AppService>().on_get_recent_files({
+        let cloned_file_manager = file_manager.clone();
+        move || {
+            let file_manager = cloned_file_manager.lock().unwrap();
+            let mut recent_list = Vec::new();
+
+            for a_file in file_manager.getFiles().iter() {
+                recent_list.push((a_file.get_name().into(), a_file.get_filepath().into()));
+            }
+
+            //let my_vec : Vec<(slint::SharedString, slint::SharedString)> = recent_list.into_iter().map(Into::into).collect();
+            let model = slint::ModelRc::new(VecModel::from(recent_list));
+            
+            return model;
         }
     });
 
