@@ -36,16 +36,16 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         move || {
             let app = app_weak.unwrap();
             match cloned_file_manager.lock().unwrap().add_file() {
-                Ok(var1) -> {path = var1;
+                Ok(var1) => {path = var1;
                             app.set_active_page(1);
                 },
-                Err(var2) -> path = var2 
+                Err(var2) => path = var2.to_string() 
             }
         }
     });
     
     //  Initialize pdf_renderer after given file file path
-    let pdfer = pdf_renderer::PDFViewer::new(&path);
+    let mut pdfer = pdf_renderer::PDFViewer::new(&path);
 
     // app.on_close_requested({
     //     //let app_weak = app.as_weak();
