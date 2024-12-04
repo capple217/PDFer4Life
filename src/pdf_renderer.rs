@@ -1,5 +1,6 @@
-use slint::{Image, ComponentHandle}; 
+use slint::{Image, ComponentHandle, SharedPixelBuffer}; 
 use pdfium_render::prelude::*; 
+use image::{RgbaImage, ImageBuffer, Rgba};
 
 pub struct PDFViewer<'a> {
     pdf_document: PdfDocument<'a>, 
@@ -16,12 +17,20 @@ impl<'a> PDFViewer<'a> {
         })
     }
 
+    fn imagebuff_to_sharedpix(image: RgbaImage) -> SharedPixelBuffer<Rgba<u8>> {
+        let (width, height) = image.dimensions();
+        let raw_data = image.into_raw(); // Extract raw RGBA data
+    
+        // Create a SharedPixelBuffer with the pixel data
+        SharedPixelBuffer::from_raw(raw_data, width as usize, height as usize)
+            .expect("Failed to create SharedPixelBuffer")
+    }
     pub fn render_current_page(&self) -> Image {
         let page = self.pdf_document.pages().get(self.current_page as u16).unwrap();
         let render_config = PdfRenderConfig::new().set_target_width(800).set_maximum_height(800);
-        let image = page.render_with_config(&render_config).unwrap().as_image().into_rgb8();
+        let image = page.render_with_config(&render_config).unwrap().as_image().into_rgba8();
 
-        Image::from_rgba8(image.into_raw())
+        Image::from_rgba8(Self::imagebuff_to_sharedpix(image))
     }
 
     pub fn navigate_previous(&mut self) {

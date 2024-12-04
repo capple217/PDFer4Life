@@ -3808,6 +3808,7 @@ name = "slint-rust-template"
 version = "0.1.0"
 dependencies = [
  "dotenv",
+ "image 0.25.4",
  "native-dialog",
  "pdfium-render",
  "serde",
