@@ -1,10 +1,15 @@
 import { TextEdit, Button } from "std-widgets.slint";
 import { TextEditor } from "text-editor.slint";
 import {PDFRender} from "pdf-render.slint";
-import {Page} from "common.slint";
+import {Page, PDFerPalette} from "common.slint";
 
 
 export component SplitPage inherits Page {
+    background: PDFerPalette.background;
+    border-width: PDFerPalette.page-border-width;
+    border-color: PDFerPalette.secondary;
+
+
     width: 1000px;
     height: 500px;
     HorizontalLayout {

@@ -1,6 +1,12 @@
 // import { } from "std-widgets.slint";
-import { BackendPDF } from "common.slint";
+import { BackendPDF, PDFerPalette, Page } from "common.slint";
 
-export component PDFRender inherits Window {
+export component PDFRender inherits Page {
+    background: PDFerPalette.background;
+    border-width: PDFerPalette.page-border-width;
+    border-color: PDFerPalette.secondary;
+    padding: PDFerPalette.page-border-width;
+
+
     Rectangle { border-color: yellow; min-width: 20px;border-width: 2px; }
 }

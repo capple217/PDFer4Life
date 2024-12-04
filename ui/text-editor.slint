@@ -1,12 +1,20 @@
 import { TextEdit, Button } from "std-widgets.slint";
-import {Page, BackendTextEditor, CustomButton} from "common.slint";
+import {Page, BackendTextEditor, CustomButton, PDFerPalette} from "common.slint";
 
 export component TextEditor inherits Page {
     in-out property <string> notes-text: "";
     in-out property <string> txt-file-path: "";
     in-out property <int> text-font-size:12;
 
+    background: PDFerPalette.background;
+    border-width: PDFerPalette.page-border-width;
+    border-color: PDFerPalette.secondary;
+    padding: PDFerPalette.page-border-width;
+
+
+
     VerticalLayout {
+        height: 100%;
         HorizontalLayout { // font settings, save & load
             // change font
             Font:=TextEdit {
@@ -73,8 +81,8 @@ export component TextEditor inherits Page {
         }
         TE:=TextEdit {
             font-size: text-font-size * 1px;
-            height: 100%;
-            width: 50%;
+            height: 90%;
+            width: 48%;
             text: notes-text;
             edited(text) => {
                 notes-text = text;

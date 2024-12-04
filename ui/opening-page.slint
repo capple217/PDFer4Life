@@ -1,12 +1,14 @@
 import {Button, VerticalBox, HorizontalBox} from "std-widgets.slint";
-import {Page, AppService} from "common.slint";
+import {Page, AppService, PDFerPalette, CustomButton} from "common.slint";
 
 export component OpeningPage inherits Page {
+    background: PDFerPalette.background;
+
     VerticalBox {
         alignment: center;
         HorizontalBox {
         
-            Button {
+            CustomButton {
                 width: 100px;
                 height: 200px;
                 text: "Open File";
