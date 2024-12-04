@@ -6,9 +6,9 @@ import { BackendPDF } from "common.slint";
 import { Button } from "std-widgets.slint";
 
 export component PDFRender inherits Window {
-    property <image> current_image;
-    property <bool> has_previous;
-    property <bool> has_next;
+    in-out property <image> current_image;
+    in-out property <bool> has_previous;
+    in-out property <bool> has_next;
 
     VerticalLayout {
         spacing: 10px;

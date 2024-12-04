@@ -21,8 +21,7 @@ impl<'a> PDFViewer<'a> {
         let render_config = PdfRenderConfig::new().set_target_width(800).set_maximum_height(800);
         let image = page.render_with_config(&render_config).unwrap().as_image().into_rgb8();
 
-        Image::from_rgba_bytes(image.width() as u32, image.height() as u32, image.into_raw())
-            .unwrap()
+        Image::from_rgba8(image.into_raw())
     }
 
     pub fn navigate_previous(&mut self) {
