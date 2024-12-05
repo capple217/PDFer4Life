@@ -45,7 +45,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     });
     
     //  Initialize pdf_renderer after given file file path
-    let mut pdfer = pdf_renderer::PDFViewer::new(&path);
+    let mut pdfer = pdf_renderer::PDFViewer::new(&path).unwrap();
 
     // app.on_close_requested({
     //     //let app_weak = app.as_weak();
@@ -66,12 +66,12 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     // pure callback navigate_previous();
     // pure callback navigate_next();
     app.global::<BackendPDF>().on_navigate_previous(||{
-        pdfer.navigate_previous()
+        pdfer.navigate_previous();
     });
 
 
     app.global::<BackendPDF>().on_navigate_next(||{
-        pdfer.navigate_next()
+        pdfer.navigate_next();
     });
 
     
