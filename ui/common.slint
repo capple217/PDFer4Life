@@ -22,20 +22,20 @@ export global PDFerPalette  {
 
 
     property <ModeColors> light-mode-colors: {
-        background: #FFFFFF,
-        primary: #575fac,
-        secondary: #e263ff,
+        background: #E0DDCF,
+        primary: #534B52,
+        secondary: #474448,
         text-primary: #000,
-        text-secondary: #5b5f6b,
+        text-secondary: #2D232E,
         destructive: #FF3B30,
     };
 
     property <ModeColors> dark-mode-colors: {
-        background: #153243,
-        primary: #284B63,
-        secondary: #9883E5,
-        text-primary: #B4B8AB,
-        text-secondary: #D8D9D3,
+        background: #1A1F24,
+        primary: #0A0A0A,
+        secondary: #151415,
+        text-primary: #E0DDCF,
+        text-secondary: #F1F0EA,
         destructive: #F55D3E,
     };
 
@@ -53,7 +53,7 @@ export global PDFerPalette  {
     out property <length> side-bar-margin: 500px;
     out property <length> page-border-width: 10px;
 
-    out property <color> primary-push-button-base: #424c6d;
+    out property <color> primary-push-button-base: background;
     out property <ButtonColors> primary-push-button-colors: {
         border: root.secondary,
         base: root.primary-push-button-base,
@@ -67,7 +67,7 @@ export component CustomButton inherits Rectangle {
     callback clicked <=> touch.clicked;
     in-out property font-size <=> txt.font-size;
     border-radius: root.height / 5;
-    border-width: 1px;
+    border-width: 5px;
     border-color: PDFerPalette.primary-push-button-colors.border;
     background: touch.pressed ? PDFerPalette.primary-push-button-colors.pressed : touch.has-hover ? PDFerPalette.primary-push-button-colors.hovered :  PDFerPalette.primary-push-button-colors.base;
     height: txt.preferred-height * 1.15;
@@ -75,7 +75,7 @@ export component CustomButton inherits Rectangle {
     txt := Text {
         x: (parent.width - self.width)/2;
         y: (parent.height - self.height)/2;
-        color: touch.pressed ? #fff : #eee;
+        color: touch.pressed ? PDFerPalette.text-primary : PDFerPalette.text-secondary;
     }
     touch := TouchArea { }
 }
