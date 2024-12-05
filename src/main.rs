@@ -77,6 +77,26 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
 
         None
     }
+
+    fn navigate_next() {
+        let document = PDF_DOCUMENT.lock().unwrap();
+        let mut current_page = CURRENT_PAGE.lock().unwrap();
+
+        if let Some(ref doc) = *document {
+            if *current_page + 1 < doc.pages().len().into() {
+                *current_page += 1;
+            }
+        }
+    }
+
+    fn navigate_previous() {
+        let mut current_page = CURRENT_PAGE.lock().unwrap();
+
+        if *current_page > 0 {
+            *current_page -= 1;
+        }
+    }
+
     
     //  Initialize pdf_renderer after given file file path
     let mut pdfer = pdf_renderer::PDFViewer::new(&path).unwrap();
