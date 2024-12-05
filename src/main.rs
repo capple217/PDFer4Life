@@ -43,6 +43,40 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
             }
         }
     });
+
+
+    // Global variables:
+    static PDF_DOCUMENT: Mutex<Option<PdfDocument<'static>>> = Mutex::new(None);
+    static CURRENT_PAGE: Mutex<usize> = Mutex::new(0);
+
+    fn initialize_pdf(file_path: &str) -> Result<(), PdfiumError> {
+        let pdfium = Pdfium::default();
+        let document = pdfium.load_pdf_from_file(file_path, None)?;
+        *PDF_DOCUMENT.lock().unwrap() = Some(document);
+        *CURRENT_PAGE.lock().unwrap() = 0;
+        Ok(())
+    }
+
+    fn render_current_page() -> Option<Image> {
+        let document = PDF_DOCUMENT.lock().unwrap();
+        let current_page = CURRENT_PAGE.lock().unwrap();
+
+        if let Some(ref doc) = *document {
+            let page = doc.pages().get(current_page as u16).unwrap();
+            let render_config = PdfRenderConfig::new().set_target_width(800).set_maximum_height(800);
+            let image = page.render_with_config(&render_config).unwrap().as_image().into_rgba8();
+
+            let buffer = SharedPixelBuffer::<Rgba8Pixel>::clone_from_slice(
+                image.as_raw(),
+                image.width(),
+                image.height(),
+            );
+
+            return Some(Image::from_rgba8(buffer));
+        }
+
+        None
+    }
     
     //  Initialize pdf_renderer after given file file path
     let mut pdfer = pdf_renderer::PDFViewer::new(&path).unwrap();
@@ -60,6 +94,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     //     }
         
     // });
+
 
 
     //BACKEND PDF
