@@ -92,7 +92,7 @@ export component OpeningPage inherits Page {
                 checked: PDFerPalette.dark-mode;
                 toggled => {
                     PDFerPalette.dark-mode = !PDFerPalette.dark-mode;
-                    pdfb.viewport-height = ((floor(AppService.get-num-recent-files() / 3) + 1)) * root.height * 0.225
+                    // pdfb.viewport-height = ((floor(AppService.get-num-recent-files() / 3) + 1)) * root.height * 0.225
                 }
             }
         }

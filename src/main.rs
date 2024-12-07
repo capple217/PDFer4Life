@@ -88,16 +88,18 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         }
     });
 
+
+
     app.global::<AppService>().on_get_num_recent_files({
         let cloned_file_manager = file_manager.clone();
-        let mut num_files = 0;
         move || {
+            let mut count = 0;
             let file_manager = cloned_file_manager.lock().unwrap();
 
             for a_file in file_manager.getFiles().iter() {
-                num_files+=1;
+                count+=1;
             }
-            return num_files;
+            return count;
         }
     });
 
