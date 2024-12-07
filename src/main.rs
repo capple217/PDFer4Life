@@ -8,7 +8,7 @@ use pdfium_render::prelude::*;
 slint::include_modules!();
 use slint::VecModel;
 mod interface;
-mod file_management;
+mod txt_file;
 // mod pdf_renderer;
 use std::sync::{Arc, Mutex};
 use std::vec;
@@ -43,7 +43,12 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
 
     
     let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
-    let mut path: String;
+    let mut path = Arc::new(Mutex::new(""));
+    let pdfium = Pdfium::default();
+    let mut pdf_document; 
+    let mut current_page = 0;
+    let pdf_doc = &mut pdf_document;
+
 
 
     /*  CALLBACK:
@@ -52,13 +57,26 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     app.global::<AppService>().on_open_file({
         let app_weak = app.as_weak();
         let cloned_file_manager = file_manager.clone();
+        let cloned_path = path.clone();
         move || {
             let app = app_weak.unwrap();
             let mut file_manager = cloned_file_manager.lock().unwrap();
-            if file_manager.add_file() {
-               app.set_active_page(1);
+            let mut path = cloned_path.lock().unwrap();
+            if let file_path = file_manager.add_file() {
+                app.set_active_page(1);
+                *path = file_path.unwrap().as_str();
             }
         }
+
+        // pdf_document = match *path.lock().unwrap(){
+        //     "" => (),
+        //     p => pdfium.load_pdf_from_file(p, None).unwrap()
+        // }
+        
+        match *path.lock().unwrap(){
+            "" => (),
+            p => *pdf_doc = pdfium.load_pdf_from_file(p, None).unwrap()
+        };
     });
 
     /*  CALLBACK:
@@ -113,11 +131,6 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         }
         
     });
-
-    // Global variables:
-    let pdfium = Pdfium::default();
-    let pdf_document = pdfium.load_pdf_from_file(file_path, None)?; 
-    let mut current_page = 0;
 
 
     //BACKEND PDF
