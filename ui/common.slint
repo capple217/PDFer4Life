@@ -83,6 +83,7 @@ export global AppService  {
     // This callback can be implemented in native code using the Slint API
     pure callback open-file();
     pure callback get-recent-files() -> [{path: string, name: string}];
+    pure callback get-num-recent-files() -> int;
     pure callback open-recent-file(string);
     pure callback trim-file-name(string) -> string;
 }

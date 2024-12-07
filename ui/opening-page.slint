@@ -1,11 +1,14 @@
-import {Button, VerticalBox, HorizontalBox, Palette, GridBox, Switch} from "std-widgets.slint";
+import {Button, VerticalBox, HorizontalBox, Palette, GridBox, Switch, ScrollView} from "std-widgets.slint";
 import {Page, AppService, PDFerPalette, CustomButton} from "common.slint";
 
-component PDFButtons inherits Rectangle {
+component PDFButtons inherits ScrollView {
+    in property <int> vp-height: ((floor(AppService.get-num-recent-files() / 3) + 1) / 1px) * root.height * 0.225;
+    height: 60%;
+    viewport-height: vp-height * 1px;
     in property <[{name: string, path: string}]> recent_files: AppService.get-recent-files();
     for file[i] in recent_files: r := Rectangle {
-        x: mod(i,3) * root.width * 0.3 + root.width*0.075;
-        y: floor(i/3) * root.height * 0.225;
+        x: mod(i,3) * root.width * 0.3 + root.width * 0.075;
+        y: floor(i / 3) * root.height * 0.225;
         height: root.height * 0.2;
         width: root.width * 0.25;
         cb := CustomButton {
@@ -75,27 +78,8 @@ export component OpeningPage inherits Page {
             }
         }
 
-        // VerticalLayout {
-        //     spacing: 10px;
-        //     padding-left: root.width * 0.35;
-        //     in property <[{name: string, path: string}]> recent_files: AppService.get-recent-files();
-        //     for file[i] in recent_files: r := Rectangle {
-        //         padding-left: root.width * 0.35;
-        //         height: root.height * 0.2;
-        //         width: root.width * 0.3;
-        //         cb := CustomButton {
-        //             text: AppService.trim-file-name(file.name);
-        //             background: PDFerPalette.primary;
-        //             font-size: r.height * 0.25;
-        //             border-color: black;
-        //             clicked => {
-        //                 AppService.open-recent-file(file.path);
-        //             }
-        //         }
-        //     }
-        // }
-            PDFButtons {}
-        
+        PDFButtons { }
+
         Rectangle {
             Switch {
                 text: "Dark Mode";
@@ -103,4 +87,3 @@ export component OpeningPage inherits Page {
         }
     }
 }
-
