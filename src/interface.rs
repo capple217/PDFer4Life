@@ -1,6 +1,6 @@
 use native_dialog::FileDialog;
-use std::time::{SystemTime, UNIX_EPOCH};
-use serde_json::{Result, Value};
+// use std::time::{SystemTime, UNIX_EPOCH};
+// use serde_json::{Result, Value};
 use serde::{Deserialize, Serialize};
 // Create a map (name : file path)
 // functionality to rename, delete, and view all files
@@ -65,17 +65,17 @@ impl FileManager{
         }
     }
     
-    fn delete_file(&mut self, name: &str) {
+    // fn delete_file(&mut self, name: &str) {
         // if let Some(pos) = self.files.iter().position(|file| file.name = name) {
         //     self.files.remove(pos);
         // }
-    }
+    // }
 
-    fn rename(&mut self, new_name: &str, old_name: &str) {
+    // fn rename(&mut self, new_name: &str, old_name: &str) {
         // if let Some(file) = self.files.iter_mut().find(|file| file.name = old_name) {
         //     file.name = new_name.to_string();
         // }
-    }
+    // }
 
     pub fn getFiles(&self) -> &Vec<FileInfo> {
         return &self.files;

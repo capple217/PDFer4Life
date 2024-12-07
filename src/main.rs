@@ -2,16 +2,16 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 //imports
-use std::error::Error;
+// use std::error::Error;
 
 slint::include_modules!();
-use slint::{VecModel,Image};
+use slint::{VecModel};
 mod interface;
 mod txt_file;
 use std::sync::{Arc, Mutex};
-use std::vec;
-use serde_json::{Result, Value};
-use serde::{Deserialize, Serialize};
+// use std::vec;
+use serde_json::{Result}; // {, Value}
+// use serde::{Deserialize, Serialize};
 
 
 fn main() -> Result<()> { //ideally result should also have: Result<(), slint::PlatformError>
@@ -30,12 +30,12 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     
     match txt_file::read_file("database.json"){
         Ok(data) => {
-            if (data != "") {initial_file_manager.setFiles(serde_json::from_str(data.as_str())?)}
+            if data != "" {initial_file_manager.setFiles(serde_json::from_str(data.as_str())?)}
         },
-        Err(e) => ()
+        Err(_) => ()
     };
 
-    let mut file_manager = Arc::new(Mutex::new(initial_file_manager));
+    let file_manager = Arc::new(Mutex::new(initial_file_manager));
 
     
 
@@ -188,7 +188,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     });
 
 
-    app.run();
+    let _ = app.run();
 
     Ok(())
 
