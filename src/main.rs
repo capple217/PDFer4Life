@@ -5,9 +5,11 @@
 use std::error::Error;
 
 slint::include_modules!();
+use slint::VecModel;
 mod interface;
-mod file_management;
+mod txt_file;
 use std::sync::{Arc, Mutex};
+use std::vec;
 use serde_json::{Result, Value};
 use serde::{Deserialize, Serialize};
 
@@ -21,8 +23,21 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     /*
     File Manager
     */
-    let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
 
+    let mut initial_file_manager = interface::FileManager::new();
+
+    
+    
+    match txt_file::read_file("database.json"){
+        Ok(data) => {
+            if (data != "") {initial_file_manager.setFiles(serde_json::from_str(data.as_str())?)}
+        },
+        Err(e) => ()
+    };
+
+    let mut file_manager = Arc::new(Mutex::new(initial_file_manager));
+
+    
 
     /*  CALLBACK:
         Prompts user selects PDF -> switch to text-editor pdf-render splitscreen page
@@ -32,25 +47,65 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         let cloned_file_manager = file_manager.clone();
         move || {
             let app = app_weak.unwrap();
-            if cloned_file_manager.lock().unwrap().add_file() {
+            let mut file_manager = cloned_file_manager.lock().unwrap();
+            if file_manager.add_file() {
                app.set_active_page(1);
             }
         }
     });
 
-    // app.on_close_requested({
-    //     //let app_weak = app.as_weak();
-    //     let cloned_file_manager = file_manager.clone();
-    //     move || {
-    //         //let app = app_weak.unwrap();
-    //         let files = cloned_file_manager.lock().unwrap().getFiles();
+    /*  CALLBACK:
+        Prompts user selects PDF from recents -> switch to text-editor pdf-render splitscreen page
+    */
+    app.global::<AppService>().on_open_recent_file({
+        let app_weak = app.as_weak();
+        //let cloned_file_manager = file_manager.clone();
+        move |file_path|{
+            let app = app_weak.unwrap();
+            //let mut file_manager = cloned_file_manager.lock().unwrap();
+            app.set_active_page(1);
+            println!("{}", file_path.to_string());
+        }
+    });
 
-    //         let json = serde_json::to_string(&files).unwrap();
-    //         println!("the json is {}", json);
-    //         slint::CloseRequestResponse::HideWindow
-    //     }
+    /*  CALLBACK:
+        list recently opened PDFs
+    */
+    app.global::<AppService>().on_get_recent_files({
+        let cloned_file_manager = file_manager.clone();
+        move || {
+            let file_manager = cloned_file_manager.lock().unwrap();
+            let mut recent_list = Vec::new();
+
+            for a_file in file_manager.getFiles().iter() {
+                recent_list.push((a_file.get_name().into(), a_file.get_filepath().into()));
+            }
+
+            //let my_vec : Vec<(slint::SharedString, slint::SharedString)> = recent_list.into_iter().map(Into::into).collect();
+            let model = slint::ModelRc::new(VecModel::from(recent_list));
+            
+            return model;
+        }
+    });
+
+    app.window().on_close_requested({
+        let cloned_file_manager = file_manager.clone();
+        move || {
+            let file_manager = cloned_file_manager.lock().unwrap();
+            let files = file_manager.getFiles();
+
+            let json = serde_json::to_string(&files).unwrap();
+
+            match txt_file::write_to_file("database.json", json.as_str()) {
+                Ok(_) => println!("File Saved"),
+                Err(e) => eprintln!("Error saving file: {}", e),
+            }
+
+            println!("the json is {}", json);
+            slint::CloseRequestResponse::HideWindow
+        }
         
-    // });
+    });
 
 
     /*  CALLBACK:
@@ -58,7 +113,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         Returns path to txt file as String
     */
     app.global::<BackendTextEditor>().on_open_text_file(||{
-        file_management::Files::open_file_txt().into()
+        txt_file::open_file_txt().into()
     });
 
     /*  CALLBACK:
@@ -68,7 +123,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         Returns void
     */
     app.global::<BackendTextEditor>().on_save_file(|file_name, text| {
-        match file_management::write_to_file(file_name.as_str(), text.as_str()) {
+        match txt_file::write_to_file(file_name.as_str(), text.as_str()) {
             Ok(_) => println!("File Saved"),
             Err(e) => eprintln!("Error saving file: {}", e),
         }
@@ -85,7 +140,7 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
             return "".to_string().into();
         }
         let mut text = "".to_string();
-        match file_management::read_file(file_name.as_str()) {
+        match txt_file::read_file(file_name.as_str()) {
             Ok(txt) => text = txt,
             Err(e) => eprintln!("Error loading file: {}", e),
         }

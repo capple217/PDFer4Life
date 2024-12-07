@@ -82,7 +82,9 @@ export component CustomButton inherits Rectangle {
 
 export global AppService  {
     // This callback can be implemented in native code using the Slint API
-    callback open-file();
+    pure callback open-file();
+    pure callback get-recent-files() -> [{path: string, name: string}];
+    pure callback open-recent-file(string);
 
 }
 
