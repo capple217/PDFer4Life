@@ -1,5 +1,5 @@
 import {Button, VerticalBox, HorizontalBox} from "std-widgets.slint";
-import {Page, AppService} from "common.slint";
+import {Page, AppService, CustomButton} from "common.slint";
 
 export component OpeningPage inherits Page {
     VerticalBox {
@@ -16,5 +16,19 @@ export component OpeningPage inherits Page {
         Text {
             text: "list of files";
         }
+        
+        in property <[{name: string, path: string}]> recent_files: AppService.get-recent-files();
+
+        for file in recent_files: CustomButton {
+            text: file.name;
+            width: 20%;
+            font-size: 20px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            clicked => {
+                AppService.open-recent-file(file.path);
+            }
+        }
+        
     }
 }
