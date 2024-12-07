@@ -6,7 +6,7 @@ import { BackendPDF } from "common.slint";
 import { Button } from "std-widgets.slint";
 
 export component PDFRender inherits Window {
-    in-out property <image> current_image;
+    in-out property <image> current_image: BackendPDF.display();
     in-out property <bool> has_previous;
     in-out property <bool> has_next;
 
@@ -34,6 +34,7 @@ export component PDFRender inherits Window {
                 enabled: has_previous;
                 clicked => {
                     BackendPDF.navigate-previous();
+                    current_image = BackendPDF.display();
                 }
             }
 
@@ -42,6 +43,7 @@ export component PDFRender inherits Window {
                 enabled: has_next;
                 clicked => {
                     BackendPDF.navigate-next();
+                    current_image = BackendPDF.display();
                 }
             }
         }

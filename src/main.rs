@@ -8,10 +8,12 @@ use pdfium_render::prelude::*;
 slint::include_modules!();
 mod interface;
 mod file_management;
-mod pdf_renderer;
+// mod pdf_renderer;
 use std::sync::{Arc, Mutex};
 use serde_json::{Result, Value};
 use serde::{Deserialize, Serialize};
+use slint::{Image, SharedPixelBuffer, Rgba8Pixel};
+
 
 
 fn main() -> Result<()> { //ideally result should also have: Result<(), slint::PlatformError>
@@ -46,87 +48,39 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
 
 
     // Global variables:
-    static PDF_DOCUMENT: Mutex<Option<PdfDocument<'static>>> = Mutex::new(None);
-    static CURRENT_PAGE: Mutex<usize> = Mutex::new(0);
-
-    fn initialize_pdf(file_path: &str) -> Result<(), PdfiumError> {
-        let pdfium = Pdfium::default();
-        let document = pdfium.load_pdf_from_file(file_path, None)?;
-        *PDF_DOCUMENT.lock().unwrap() = Some(document);
-        *CURRENT_PAGE.lock().unwrap() = 0;
-        Ok(())
-    }
-
-    fn render_current_page() -> Option<Image> {
-        let document = PDF_DOCUMENT.lock().unwrap();
-        let current_page = CURRENT_PAGE.lock().unwrap();
-
-        if let Some(ref doc) = *document {
-            let page = doc.pages().get(current_page as u16).unwrap();
-            let render_config = PdfRenderConfig::new().set_target_width(800).set_maximum_height(800);
-            let image = page.render_with_config(&render_config).unwrap().as_image().into_rgba8();
-
-            let buffer = SharedPixelBuffer::<Rgba8Pixel>::clone_from_slice(
-                image.as_raw(),
-                image.width(),
-                image.height(),
-            );
-
-            return Some(Image::from_rgba8(buffer));
-        }
-
-        None
-    }
-
-    fn navigate_next() {
-        let document = PDF_DOCUMENT.lock().unwrap();
-        let mut current_page = CURRENT_PAGE.lock().unwrap();
-
-        if let Some(ref doc) = *document {
-            if *current_page + 1 < doc.pages().len().into() {
-                *current_page += 1;
-            }
-        }
-    }
-
-    fn navigate_previous() {
-        let mut current_page = CURRENT_PAGE.lock().unwrap();
-
-        if *current_page > 0 {
-            *current_page -= 1;
-        }
-    }
-
-    
-    //  Initialize pdf_renderer after given file file path
-    let mut pdfer = pdf_renderer::PDFViewer::new(&path).unwrap();
-
-    // app.on_close_requested({
-    //     //let app_weak = app.as_weak();
-    //     let cloned_file_manager = file_manager.clone();
-    //     move || {
-    //         //let app = app_weak.unwrap();
-    //         let files = cloned_file_manager.lock().unwrap().getFiles();
-
-    //         let json = serde_json::to_string(&files).unwrap();
-    //         println!("the json is {}", json);
-    //         slint::CloseRequestResponse::HideWindow
-    //     }
-        
-    // });
-
+    let pdfium = Pdfium::default();
+    let pdf_document = pdfium.load_pdf_from_file(file_path, None)?; 
+    let mut current_page = 0;
 
 
     //BACKEND PDF
     // pure callback navigate_previous();
     // pure callback navigate_next();
+    app.global::<BackendPDF>().on_display(||{
+        let page = pdf_document.pages().get(current_page as u16).unwrap();
+        let render_config = PdfRenderConfig::new().set_target_width(800).set_maximum_height(800);
+        let image = page.render_with_config(&render_config).unwrap().as_image().into_rgba8();
+
+        let buffer = SharedPixelBuffer::<Rgba8Pixel>::clone_from_slice(
+            image.as_raw(),
+            image.width(),
+            image.height(),
+        );
+        
+        Image::from_rgba8(buffer)
+    });
+
     app.global::<BackendPDF>().on_navigate_previous(||{
-        pdfer.navigate_previous();
+        if(current_page > 0){
+            current_page -= 1;
+        }
     });
 
 
     app.global::<BackendPDF>().on_navigate_next(||{
-        pdfer.navigate_next();
+        if current_page + 1 < pdf_document.pages().len().into() {
+            current_page += 1;
+        }
     });
 
     
