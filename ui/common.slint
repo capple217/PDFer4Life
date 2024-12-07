@@ -1,4 +1,4 @@
-import { Palette } from "std-widgets.slint";
+import { Palette, Switch } from "std-widgets.slint";
 
 struct ButtonColors  {
     border: color,
@@ -18,13 +18,13 @@ struct ModeColors {
 
 export global PDFerPalette  {
     // in property <bool> dark-mode: Palette.color-scheme == ColorScheme.dark;
-    in property <bool> dark-mode: true;
+    in-out property <bool> dark-mode: false;
 
 
     property <ModeColors> light-mode-colors: {
         background: #E0DDCF,
-        primary: #534B52,
-        secondary: #474448,
+        primary: #EFFBF0,
+        secondary: #BAB5B5,
         text-primary: #000,
         text-secondary: #2D232E,
         destructive: #FF3B30,
@@ -54,11 +54,12 @@ export global PDFerPalette  {
     out property <length> page-border-width: 10px;
 
     out property <color> primary-push-button-base: background;
+    out property <color> button-border: black;
     out property <ButtonColors> primary-push-button-colors: {
-        border: root.secondary,
-        base: root.primary-push-button-base,
-        pressed: root.primary-push-button-base.darker(40%),
-        hovered: root.primary-push-button-base.darker(20%),
+        border: button-border,
+        base: primary,
+        pressed: secondary.darker(20%),
+        hovered: secondary,
     };
 }
 
@@ -70,6 +71,10 @@ export component CustomButton inherits Rectangle {
     border-width: 5px;
     border-color: PDFerPalette.primary-push-button-colors.border;
     background: touch.pressed ? PDFerPalette.primary-push-button-colors.pressed : touch.has-hover ? PDFerPalette.primary-push-button-colors.hovered :  PDFerPalette.primary-push-button-colors.base;
+    animate background {
+        duration: 100ms;
+        easing: ease-out-quad;
+    }
     min-width: txt.preferred-width + 5px;
     txt := Text {
         x: (parent.width - self.width)/2;
