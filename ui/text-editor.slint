@@ -1,23 +1,19 @@
-import { TextEdit, Button } from "std-widgets.slint";
-import {Page, BackendTextEditor, CustomButton, PDFerPalette} from "common.slint";
+import { TextEdit, Button, Switch } from "std-widgets.slint";
+import {Page, BackendTextEditor, CustomButton, PDFerPalette, ToggleSwitch} from "common.slint";
 
 export component TextEditor inherits Page {
     in-out property <string> notes-text: "";
     in-out property <string> txt-file-path: "";
     in-out property <int> text-font-size:12;
-
     background: PDFerPalette.background;
     border-width: PDFerPalette.page-border-width;
     border-color: PDFerPalette.secondary;
     padding: PDFerPalette.page-border-width;
-
-
-
     VerticalLayout {
         height: 100%;
         HorizontalLayout { // font settings, save & load
             // change font
-            Font:=TextEdit {
+            Font := TextEdit {
                 width: 10%;
                 wrap: TextWrap.word-wrap;
                 min-height: 10px;
@@ -31,6 +27,7 @@ export component TextEditor inherits Page {
                     TE.font-size = text-font-size * 1px;
                 }
             }
+
             CustomButton {
                 text: "+";
                 width: 10%;
@@ -43,6 +40,7 @@ export component TextEditor inherits Page {
                     Font.text = text-font-size;
                 }
             }
+
             CustomButton {
                 text: "-";
                 width: 10%;
@@ -55,22 +53,21 @@ export component TextEditor inherits Page {
                     Font.text = text-font-size;
                 }
             }
-            Rectangle {
-                width:20%;
-            }
+
             Button {
                 text: "Save";
                 clicked => {
-                    if(txt-file-path == ""){
+                    if (txt-file-path == "") {
                         txt-file-path = BackendTextEditor.open-text-file();
                     }
                     BackendTextEditor.save-file(txt-file-path, notes-text);
                 }
             }
+
             Button {
                 text: "Load File";
                 clicked => {
-                    if(txt-file-path != ""){
+                    if (txt-file-path != "") {
                         BackendTextEditor.save-file(txt-file-path, notes-text);
                     }
                     txt-file-path = BackendTextEditor.open-text-file();
@@ -78,10 +75,19 @@ export component TextEditor inherits Page {
                     TE.text = notes-text;
                 }
             }
+
+            ToggleSwitch {
+                text: "Dark Mode";
+                checked: PDFerPalette.dark-mode;
+                toggled => {
+                    PDFerPalette.dark-mode = !PDFerPalette.dark-mode;
+                }
+            }
         }
-        TE:=TextEdit {
+
+        TE := TextEdit {
             font-size: text-font-size * 1px;
-            height: 90%;
+            height: 95%;
             width: 48%;
             text: notes-text;
             edited(text) => {

@@ -7,13 +7,12 @@ import {Page, PDFerPalette} from "common.slint";
 export component SplitPage inherits Page {
     background: PDFerPalette.background;
     border-width: PDFerPalette.page-border-width;
-    border-color: PDFerPalette.secondary;
-
-
-    width: 1000px;
-    height: 500px;
+    border-color: black;
+    width: 100%;
+    height: 100%;
     HorizontalLayout {
-        PDFRender{}
-        TextEditor{}
+        PDFRender { }
+
+        TextEditor { }
     }
 }
