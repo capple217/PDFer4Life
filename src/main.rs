@@ -5,7 +5,7 @@
 use std::error::Error;
 
 slint::include_modules!();
-use slint::VecModel;
+use slint::{VecModel,Image};
 mod interface;
 mod txt_file;
 use std::sync::{Arc, Mutex};
@@ -86,6 +86,16 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
             
             return model;
         }
+    });
+
+    let max_name_len = 15;
+    app.global::<AppService>().on_trim_file_name(move |name|{
+        if name.len() > max_name_len as usize{
+            let mut new_name:String = name[0..max_name_len-5].to_string();
+            new_name += "...pdf";
+            return new_name.into();
+        }
+        return name.into();
     });
 
     app.window().on_close_requested({

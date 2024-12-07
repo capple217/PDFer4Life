@@ -85,7 +85,7 @@ export global AppService  {
     pure callback open-file();
     pure callback get-recent-files() -> [{path: string, name: string}];
     pure callback open-recent-file(string);
-
+    pure callback trim-file-name(string) -> string;
 }
 
 export global BackendTextEditor {

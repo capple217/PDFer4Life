@@ -1,28 +1,64 @@
-import {Button, VerticalBox, HorizontalBox} from "std-widgets.slint";
+import {Button, VerticalBox, HorizontalBox, Palette} from "std-widgets.slint";
 import {Page, AppService, PDFerPalette, CustomButton} from "common.slint";
 
 export component OpeningPage inherits Page {
     background: PDFerPalette.background;
+    VerticalLayout {
 
-    VerticalBox {
-        alignment: center;
-        HorizontalBox {
-        
-            CustomButton {
-                width: 100px;
-                height: 200px;
-                text: "Open File";
-                clicked => {AppService.open-file();}
+        padding:25px;
+        spacing:30px;
+        Rectangle {
+            // padding-left: root.width*0.37;
+            padding-top: 20px;
+            height: Img.height * 1.2;
+            Img := Image {
+                width: root.width * 0.25;
+                source: @image-url("../assets/PDFer_Logo_Dark.png");
             }
         }
-        Text {
-            text: "list of files";
+
+        Rectangle {
+            padding-left:root.width *0.3;
+            HorizontalLayout {
+                width: root.width * 0.4;
+                alignment: center;
+                CustomButton {
+                    height: 100px;
+                    border-width: 10px;
+                    border-radius: 30px;
+                    border-color: black;
+                    background: PDFerPalette.primary;
+                    hb := HorizontalBox {
+                        alignment: center;
+                        padding: 10px;
+                        padding-top: hb.height *0.1;
+                        Image {
+                            source: @image-url("../assets/upload_symbol_dark.png");
+                            vertical-alignment: ImageVerticalAlignment.center;
+                            horizontal-alignment: ImageHorizontalAlignment.left;
+                            height: hb.height * 0.8;
+                        }
+
+                        Text {
+                            vertical-alignment: TextVerticalAlignment.center;
+                            horizontal-alignment: TextHorizontalAlignment.center;
+                            text: "Upload PDF File";
+                            font-size: hb.height * 0.5;
+                            height: hb.height *0.8;
+                        }
+                    }
+
+                    clicked => {
+                        AppService.open-file();
+                    }
+                }
+            }
         }
         
-        in property <[{name: string, path: string}]> recent_files: AppService.get-recent-files();
 
+        in property <[{name: string, path: string}]> recent_files: AppService.get-recent-files();
         for file in recent_files: CustomButton {
-            text: file.name;
+            text: AppService.trim-file-name(file.name);
             width: 20%;
             font-size: 20px;
             padding-top: 0px;
@@ -31,6 +67,5 @@ export component OpeningPage inherits Page {
                 AppService.open-recent-file(file.path);
             }
         }
-        
     }
 }
