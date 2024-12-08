@@ -40,6 +40,7 @@ impl FileInfo {
 pub struct FileManager {
     files: Vec<FileInfo>,
     cur_file_path: String,
+    cur_file_page: u16,
 }
 
 impl FileManager {
@@ -47,6 +48,7 @@ impl FileManager {
         Self {
             files: Vec::new(),
             cur_file_path: "../assets/blank.pdf".to_string(),
+            cur_file_page: 0,
         }
     }
 
@@ -78,6 +80,14 @@ impl FileManager {
 
     pub fn set_cur_path(&mut self, str: String) {
         self.cur_file_path = str;
+    }
+
+    pub fn get_cur_page(&mut self) -> u16 {
+        return self.cur_file_page;
+    }
+
+    pub fn set_cur_page(&mut self, num:u16) {
+        self.cur_file_page = num;
     }
 
 

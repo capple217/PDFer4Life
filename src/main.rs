@@ -39,8 +39,6 @@ fn main() -> Result<()> {
 
     let mut file_manager = Arc::new(Mutex::new(initial_file_manager));
 
-    // let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
-    let mut current_page = 0;
 
     /*  CALLBACK:
         Prompts user selects PDF -> switch to text-editor pdf-render splitscreen page
@@ -92,6 +90,10 @@ fn main() -> Result<()> {
         }
     });
 
+    /* CALLBACK: 
+        Saves file data to local json when window is closed
+        RETURNS Slint hidewindow
+     */
     app.window().on_close_requested({
         let cloned_file_manager = file_manager.clone();
         move || {
@@ -117,16 +119,15 @@ fn main() -> Result<()> {
         let mut cloned_file_manager = file_manager.clone();
         move || {
             let mut file_manager = cloned_file_manager.lock().unwrap();
+            let current_page = file_manager.get_cur_page();
             let pdfium = Pdfium::default();
             let file_path = file_manager.get_cur_path().unwrap();
-            let document = pdfium.load_pdf_from_file(file_path.as_str(), None);
-            if document.is_err(){
-                println!("error");
-            }
-            let page = document.unwrap().pages().get(current_page as u16).unwrap();
+            let document = pdfium.load_pdf_from_file(file_path.as_str(), None).unwrap();
+            let page = document.pages().get(current_page as u16).unwrap();
             let render_config = PdfRenderConfig::new()
-                .set_target_width(800)
-                .set_maximum_height(800);
+                .set_target_width(2000)
+                .set_maximum_height(2000);
+
             let image = page
                 .render_with_config(&render_config)
                 .unwrap()
@@ -143,17 +144,30 @@ fn main() -> Result<()> {
         }
     });
 
-    // app.global::<BackendPDF>().on_navigate_previous(|| {
-    //     if (current_page > 0) {
-    //         current_page -= 1;
-    //     }
-    // });
+    app.global::<BackendPDF>().on_navigate_previous({
+        let mut cloned_file_manager = file_manager.clone();
+        move || {
+            let mut file_manager = cloned_file_manager.lock().unwrap();
+            let num = file_manager.get_cur_page();
+            if num > 0 {
+                file_manager.set_cur_page(num - 1);
+            }
+        }
+    });
 
-    // app.global::<BackendPDF>().on_navigate_next(||{
-    //     if current_page + 1 < pdf_document.pages().len().into() {
-    //         current_page += 1;
-    //     }
-    // });
+    app.global::<BackendPDF>().on_navigate_next({
+        let mut cloned_file_manager = file_manager.clone();
+        move || {
+            let mut file_manager = cloned_file_manager.lock().unwrap();
+            let pdfium = Pdfium::default();
+            let file_path = file_manager.get_cur_path().unwrap();
+            let document = pdfium.load_pdf_from_file(file_path.as_str(), None).unwrap();
+            let num = file_manager.get_cur_page();
+            if num + 1 < document.pages().len().into() {
+                file_manager.set_cur_page(num + 1);
+            }
+        }
+    });
 
     /*  CALLBACK:
         Prompt user to select txt file
