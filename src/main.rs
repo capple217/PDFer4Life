@@ -45,10 +45,8 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     let file_manager = Arc::new(Mutex::new(interface::FileManager::new()));
     let mut path = Arc::new(Mutex::new(""));
     let pdfium = Pdfium::default();
-    let mut pdf_document; 
+    let mut pdf_document = Arc::new(Mutex::new(pdfium.load_pdf_from_file("../assets/blank.pdf", None))); 
     let mut current_page = 0;
-    let pdf_doc = &mut pdf_document;
-
 
 
     /*  CALLBACK:
@@ -58,25 +56,18 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
         let app_weak = app.as_weak();
         let cloned_file_manager = file_manager.clone();
         let cloned_path = path.clone();
+        let cloned_pdf_doc = pdf_document.clone();
         move || {
             let app = app_weak.unwrap();
             let mut file_manager = cloned_file_manager.lock().unwrap();
             let mut path = cloned_path.lock().unwrap();
+            let mut pdf_doc = cloned_pdf_doc.lock().unwrap();
             if let file_path = file_manager.add_file() {
                 app.set_active_page(1);
                 *path = file_path.unwrap().as_str();
+                *pdf_doc = pdfium.load_pdf_from_file( file_path.unwrap().as_str(), None);
             }
         }
-
-        // pdf_document = match *path.lock().unwrap(){
-        //     "" => (),
-        //     p => pdfium.load_pdf_from_file(p, None).unwrap()
-        // }
-        
-        match *path.lock().unwrap(){
-            "" => (),
-            p => *pdf_doc = pdfium.load_pdf_from_file(p, None).unwrap()
-        };
     });
 
     /*  CALLBACK:
@@ -136,8 +127,10 @@ fn main() -> Result<()> { //ideally result should also have: Result<(), slint::P
     //BACKEND PDF
     // pure callback navigate_previous();
     // pure callback navigate_next();
+    let cloned_pdf_doc: Arc<Mutex<std::result::Result<PdfDocument<'_>, PdfiumError>>> = pdf_document.clone();
     app.global::<BackendPDF>().on_display(||{
-        let page = pdf_document.pages().get(current_page as u16).unwrap();
+        let pdf_doc = cloned_pdf_doc.lock().unwrap();
+        let page = pdf_doc.unwrap().pages().get(current_page as u16).unwrap();
         let render_config = PdfRenderConfig::new().set_target_width(800).set_maximum_height(800);
         let image = page.render_with_config(&render_config).unwrap().as_image().into_rgba8();
 
