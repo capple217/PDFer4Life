@@ -1,10 +1,8 @@
 use native_dialog::FileDialog;
 use serde::{Deserialize, Serialize};
 use std::result::Result;
-use std::time::{SystemTime, UNIX_EPOCH};
-// Create a map (name : file path)
-// functionality to rename, delete, and view all files
-// last read
+// use std::time::{SystemTime, UNIX_EPOCH};
+
 
 #[derive(Default)]
 #[derive(Serialize, Deserialize)]
@@ -103,11 +101,11 @@ impl FileManager {
         // }
     // }
 
-    pub fn getFiles(&self) -> &Vec<FileInfo> {
+    pub fn get_files(&self) -> &Vec<FileInfo> {
         return &self.files;
     }
 
-    pub fn setFiles(&mut self, data: Vec<FileInfo>) {
+    pub fn set_files(&mut self, data: Vec<FileInfo>) {
         self.files = data;
     }
 }

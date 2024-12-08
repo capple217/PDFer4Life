@@ -6,40 +6,41 @@ use pdfium_render::prelude::*;
 // use std::error::Error;
 
 slint::include_modules!();
-use slint::{VecModel};
+use slint::VecModel;
 mod interface;
 mod txt_file;
 // mod pdf_renderer;
 // use serde::{Deserialize, Serialize};
-use serde_json::{Result}; // , Value}
+use serde_json::Result; // , Value}
 use slint::{Image, Rgba8Pixel, SharedPixelBuffer};
 use std::sync::{Arc, Mutex};
 // use std::{clone, vec};
 
 fn main() -> Result<()> {
     //ideally result should also have: Result<(), slint::PlatformError>
-    /*
-    Application Window
-    */
+
+    // Application window -- define all global callbacks on this window
     let app = App::new().unwrap();
-    /*
-    File Manager
-    */
 
+    // Initializes the file manager with local data if available
     let mut initial_file_manager = interface::FileManager::new();
-
     match txt_file::read_file("database.json") {
         Ok(data) => {
-            if data != "" {initial_file_manager.setFiles(serde_json::from_str(data.as_str())?)}
-        },
-        Err(_) => ()
+            if data != "" {
+                initial_file_manager.set_files(serde_json::from_str(data.as_str())?)
+            }
+        }
+        Err(_) => (),
     };
 
-    let mut file_manager = Arc::new(Mutex::new(initial_file_manager));
+    let file_manager = Arc::new(Mutex::new(initial_file_manager));
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // CALLBACKS USED IN OPENING PAGE:
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /*  CALLBACK:
-        Prompts user selects PDF -> switch to text-editor pdf-render splitscreen page
+        Prompts user to select PDF, then sets the active page to split-page
     */
     app.global::<AppService>().on_open_file({
         let app_weak = app.as_weak();
@@ -54,7 +55,7 @@ fn main() -> Result<()> {
     });
 
     /*  CALLBACK:
-        Prompts user selects PDF from recents -> switch to text-editor pdf-render splitscreen page
+        User selected PDF from recents, then sets the active page to split-page
     */
     app.global::<AppService>().on_open_recent_file({
         let app_weak = app.as_weak();
@@ -69,7 +70,7 @@ fn main() -> Result<()> {
     });
 
     /*  CALLBACK:
-        list recently opened PDFs
+        Returns all previously opened PDFs as slint vector for use in opening-page recent pdf buttons
     */
     app.global::<AppService>().on_get_recent_files({
         let cloned_file_manager = file_manager.clone();
@@ -77,7 +78,7 @@ fn main() -> Result<()> {
             let file_manager = cloned_file_manager.lock().unwrap();
             let mut recent_list = Vec::new();
 
-            for a_file in file_manager.getFiles().iter() {
+            for a_file in file_manager.get_files().iter() {
                 recent_list.push((a_file.get_name().into(), a_file.get_filepath().into()));
             }
 
@@ -88,54 +89,44 @@ fn main() -> Result<()> {
         }
     });
 
-
-
+    /* CALLBACK:
+       Returns the number of previously opened PDFs
+    */
     app.global::<AppService>().on_get_num_recent_files({
         let cloned_file_manager = file_manager.clone();
         move || {
             let mut count = 0;
             let file_manager = cloned_file_manager.lock().unwrap();
 
-            for a_file in file_manager.getFiles().iter() {
-                count+=1;
+            for _a_file in file_manager.get_files().iter() {
+                count += 1;
             }
             return count;
         }
     });
 
+    /* CALLBACK:
+       Returns trimmed file name if name exceeds max length
+    */
     let max_name_len = 15;
-    app.global::<AppService>().on_trim_file_name(move |name|{
-        if name.len() > max_name_len as usize{
-            let mut new_name:String = name[0..max_name_len-5].to_string();
+    app.global::<AppService>().on_trim_file_name(move |name| {
+        if name.len() > max_name_len as usize {
+            let mut new_name: String = name[0..max_name_len - 5].to_string();
             new_name += "...pdf";
             return new_name.into();
         }
         return name.into();
     });
 
-    app.window().on_close_requested({
-        let cloned_file_manager = file_manager.clone();
-        move || {
-            let file_manager = cloned_file_manager.lock().unwrap();
-            let files = file_manager.getFiles();
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // CALLBACKS USED IN PDF RENDERING:
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            let json = serde_json::to_string(&files).unwrap();
-
-            match txt_file::write_to_file("database.json", json.as_str()) {
-                Ok(_) => println!("File Saved"),
-                Err(e) => eprintln!("Error saving file: {}", e),
-            }
-
-            println!("the json is {}", json);
-            slint::CloseRequestResponse::HideWindow
-        }
-    });
-
-    //BACKEND PDF
-    // pure callback navigate_previous();
-    // pure callback navigate_next();
+    /*  CALLBACK:
+       Renders current page of PDF and returns as Slint image
+    */
     app.global::<BackendPDF>().on_display({
-        let mut cloned_file_manager = file_manager.clone();
+        let cloned_file_manager = file_manager.clone();
         move || {
             let mut file_manager = cloned_file_manager.lock().unwrap();
             let current_page = file_manager.get_cur_page();
@@ -163,8 +154,11 @@ fn main() -> Result<()> {
         }
     });
 
+    /* CALLBACK:
+       Navigates to the previous page in the pdf file
+    */
     app.global::<BackendPDF>().on_navigate_previous({
-        let mut cloned_file_manager = file_manager.clone();
+        let cloned_file_manager = file_manager.clone();
         move || {
             let mut file_manager = cloned_file_manager.lock().unwrap();
             let num = file_manager.get_cur_page();
@@ -174,8 +168,11 @@ fn main() -> Result<()> {
         }
     });
 
+    /*  CALLBACK:
+       Navigates to the next page in the pdf file
+    */
     app.global::<BackendPDF>().on_navigate_next({
-        let mut cloned_file_manager = file_manager.clone();
+        let cloned_file_manager = file_manager.clone();
         move || {
             let mut file_manager = cloned_file_manager.lock().unwrap();
             let pdfium = Pdfium::default();
@@ -188,18 +185,18 @@ fn main() -> Result<()> {
         }
     });
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // CALLBACKS USED IN TEXT EDITOR:
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     /*  CALLBACK:
-        Prompt user to select txt file
-        Returns path to txt file as String
+        Prompt user to select txt file and returns path as String
     */
     app.global::<BackendTextEditor>()
         .on_open_text_file(|| txt_file::open_file_txt().into());
 
     /*  CALLBACK:
-            file_name: String = file path
-            text: String = text to save
-        Saves text to specified file path
-        Returns void
+        Saves text to specified file path (file_name)
     */
     app.global::<BackendTextEditor>().on_save_file(
         |file_name, text| match txt_file::write_to_file(file_name.as_str(), text.as_str()) {
@@ -209,9 +206,7 @@ fn main() -> Result<()> {
     );
 
     /*  CALLBACK:
-            file_name: String = file path
-        Reads file
-        Returns file text
+        Returns text at path (file_name) as String
     */
     app.global::<BackendTextEditor>().on_read_file(|file_name| {
         if file_name == "err".to_string() {
@@ -227,8 +222,6 @@ fn main() -> Result<()> {
     });
 
     /*  CALLBACK:
-            new_size: String = new font size
-            old_font: i32 = old font size
         Returns new_size as i32 if new_size is a number between 1 & 256
     */
     app.global::<BackendTextEditor>()
@@ -256,6 +249,31 @@ fn main() -> Result<()> {
             return font;
         });
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // GENERAL APPLICATION CALLBACKS:
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    /* CALLBACK:
+       Saves local data when application window is closed
+    */
+    app.window().on_close_requested({
+        let cloned_file_manager = file_manager.clone();
+        move || {
+            let file_manager = cloned_file_manager.lock().unwrap();
+            let files = file_manager.get_files();
+
+            let json = serde_json::to_string(&files).unwrap();
+
+            match txt_file::write_to_file("database.json", json.as_str()) {
+                Ok(_) => println!("File Saved"),
+                Err(e) => eprintln!("Error saving file: {}", e),
+            }
+
+            println!("the json is {}", json);
+            slint::CloseRequestResponse::HideWindow
+        }
+    });
 
     let _ = app.run();
 
