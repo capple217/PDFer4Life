@@ -10,6 +10,9 @@ native-dialog = "0.7.0"
 serde = {version = "1.0.215", features = ["derive"] }
 serde_json = "1.0.133"
 slint = "1.8.0"
+dotenv = "0.15"
+pdfium-render = "0.8.26"
+image = "0.25"
 
 [build-dependencies]
 slint-build = "1.8.0"
