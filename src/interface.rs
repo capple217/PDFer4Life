@@ -1,6 +1,7 @@
 use native_dialog::FileDialog;
 use serde::{Deserialize, Serialize};
 use std::result::Result;
+use std::ptr;
 // use std::time::{SystemTime, UNIX_EPOCH};
 
 
@@ -37,6 +38,7 @@ impl FileInfo {
 #[derive(Serialize, Deserialize)]
 pub struct FileManager {
     files: Vec<FileInfo>,
+    cur_file_info: FileInfo,
     cur_file_path: String,
     cur_file_page: u16,
 }
@@ -45,12 +47,13 @@ impl FileManager {
     pub fn new() -> Self {
         Self {
             files: Vec::new(),
+            cur_file_info: FileInfo::new("../assets/blank.pdf", "blank.pdf"),
             cur_file_path: "../assets/blank.pdf".to_string(),
             cur_file_page: 0,
         }
     }
 
-    pub fn add_file(&mut self) -> bool {
+    pub fn add_new_file(&mut self) -> bool {
         //open file from system
         if let Some(file_path) = FileDialog::new()
             .set_location("~/Desktop")
@@ -59,14 +62,28 @@ impl FileManager {
             .unwrap()
         {
             let name = file_path.file_name().unwrap().to_str().unwrap();
-            let file = FileInfo::new(file_path.to_str().unwrap(), name);
-            self.files.push(file);
+            self.cur_file_info = FileInfo::new(file_path.to_str().unwrap(), name);
             println!("Selected file: {:?}", file_path);
             self.set_cur_path(file_path.to_str().unwrap().to_string());
             return true;
         } else {
             return false;
         }
+    }
+
+    pub fn add_file(& mut self) -> bool {
+        //open file from system
+        if (self.cur_file_path != "../assets/blank.pdf".to_string()) {
+            self.files.insert(0, FileInfo::new(&self.cur_file_info.get_filepath(), &self.cur_file_info.get_name()));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    pub fn set_cur_file_info(&mut self, str: String) {
+        let index = self.files.iter().position(|n| n.get_filepath() == str).unwrap();
+        self.cur_file_info = self.files.remove(index);
     }
 
     pub fn get_cur_path(&mut self) -> Result<String, String> {
@@ -87,19 +104,6 @@ impl FileManager {
     pub fn set_cur_page(&mut self, num:u16) {
         self.cur_file_page = num;
     }
-
-
-    // fn delete_file(&mut self, name: &str) {
-        // if let Some(pos) = self.files.iter().position(|file| file.name = name) {
-        //     self.files.remove(pos);
-        // }
-    // }
-
-    // fn rename(&mut self, new_name: &str, old_name: &str) {
-        // if let Some(file) = self.files.iter_mut().find(|file| file.name = old_name) {
-        //     file.name = new_name.to_string();
-        // }
-    // }
 
     pub fn get_files(&self) -> &Vec<FileInfo> {
         return &self.files;

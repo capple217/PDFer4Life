@@ -1,5 +1,5 @@
 import {Button, VerticalBox, HorizontalBox, Palette, GridBox, Switch, ScrollView} from "std-widgets.slint";
-import {Page, AppService, PDFerPalette, CustomButton} from "common.slint";
+import {AppService, PDFerPalette, CustomButton} from "common.slint";
 
 component PDFButtons inherits ScrollView {
     in property <int> vp-height: ((floor(AppService.get-num-recent-files() / 3) + 1) / 1px) * root.height * 0.225;
@@ -23,7 +23,7 @@ component PDFButtons inherits ScrollView {
     }
 }
 
-export component OpeningPage inherits Page {
+export component OpeningPage inherits Rectangle {
     background: PDFerPalette.background;
     animate background{
         duration: 300ms;

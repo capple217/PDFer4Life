@@ -1,23 +1,34 @@
+/*
+Project Name: PDFer
+
+Authors: Fasih Javed, Mathew Randal, Amey Gupta
+
+Description: This project will be a lightweight pdf viewer allowing split screen reading and note taking, similar to a library program.
+
+Last Updated: 12/08/24
+
+Copyright Disclaimer: This code is open source and free to use with proper attributions
+*/
+
 // Prevent console window in addition to Slint window in Windows release builds when, e.g., starting the app via file manager. Ignored on other platforms.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 //imports
 use pdfium_render::prelude::*;
-// use std::error::Error;
-
 slint::include_modules!();
 use slint::VecModel;
 mod interface;
 mod txt_file;
-// mod pdf_renderer;
-// use serde::{Deserialize, Serialize};
-use serde_json::Result; // , Value}
+use serde_json::Result;
 use slint::{Image, Rgba8Pixel, SharedPixelBuffer};
 use std::sync::{Arc, Mutex};
-// use std::{clone, vec};
+use std::env;
 
 fn main() -> Result<()> {
     //ideally result should also have: Result<(), slint::PlatformError>
+
+
+
 
     // Application window -- define all global callbacks on this window
     let app = App::new().unwrap();
@@ -41,6 +52,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Prompts user to select PDF, then sets the active page to split-page
+        
+        # Arguments
+        N/A
+
+        # Return
+        N/A
     */
     app.global::<AppService>().on_open_file({
         let app_weak = app.as_weak();
@@ -48,7 +65,7 @@ fn main() -> Result<()> {
         move || {
             let app = app_weak.unwrap();
             let mut file_manager = cloned_file_manager.lock().unwrap();
-            if file_manager.add_file() {
+            if file_manager.add_new_file() {
                 app.set_active_page(1);
             }
         }
@@ -56,6 +73,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         User selected PDF from recents, then sets the active page to split-page
+        
+        # Arguments
+        N/A
+
+        # Return
+        N/A
     */
     app.global::<AppService>().on_open_recent_file({
         let app_weak = app.as_weak();
@@ -66,11 +89,18 @@ fn main() -> Result<()> {
             app.set_active_page(1);
             println!("{}", file_path.to_string());
             file_manager.set_cur_path(file_path.to_string());
+            file_manager.set_cur_file_info(file_path.to_string());
         }
     });
 
     /*  CALLBACK:
         Returns all previously opened PDFs as slint vector for use in opening-page recent pdf buttons
+        
+        # Arguments
+        N/A
+
+        # Return
+        * A Slint vector type with info for files previously opened
     */
     app.global::<AppService>().on_get_recent_files({
         let cloned_file_manager = file_manager.clone();
@@ -90,7 +120,13 @@ fn main() -> Result<()> {
     });
 
     /* CALLBACK:
-       Returns the number of previously opened PDFs
+        Returns the number of previously opened PDFs
+
+        # Arguments
+        N/A
+
+        # Return
+        number of files previously opened
     */
     app.global::<AppService>().on_get_num_recent_files({
         let cloned_file_manager = file_manager.clone();
@@ -106,7 +142,13 @@ fn main() -> Result<()> {
     });
 
     /* CALLBACK:
-       Returns trimmed file name if name exceeds max length
+        Returns trimmed file name if name exceeds max length
+
+        # Arguments
+        * 'name' - name of pdf files currently on record
+
+        # Return
+        * a shorted version of the pdf name
     */
     let max_name_len = 15;
     app.global::<AppService>().on_trim_file_name(move |name| {
@@ -124,6 +166,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
        Renders current page of PDF and returns as Slint image
+
+        # Arguments
+        N/A
+
+        # Return
+        * A Slint rgba8 type which is used to display pdf image
     */
     app.global::<BackendPDF>().on_display({
         let cloned_file_manager = file_manager.clone();
@@ -156,6 +204,12 @@ fn main() -> Result<()> {
 
     /* CALLBACK:
        Navigates to the previous page in the pdf file
+
+        # Arguments
+        N/A
+
+        # Return
+        N / A
     */
     app.global::<BackendPDF>().on_navigate_previous({
         let cloned_file_manager = file_manager.clone();
@@ -170,6 +224,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
        Navigates to the next page in the pdf file
+       
+        # Arguments
+        N/A
+
+        # Return
+        N / A
     */
     app.global::<BackendPDF>().on_navigate_next({
         let cloned_file_manager = file_manager.clone();
@@ -191,12 +251,25 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Prompt user to select txt file and returns path as String
+
+        # Arguments
+        N/A
+
+        # Return
+        N / A
     */
     app.global::<BackendTextEditor>()
         .on_open_text_file(|| txt_file::open_file_txt().into());
 
     /*  CALLBACK:
         Saves text to specified file path (file_name)
+
+        # Arguments
+        * 'file_name' - file path of txt file
+        * 'text' - data to be stored in txt file
+
+        # Return
+        N / A
     */
     app.global::<BackendTextEditor>().on_save_file(
         |file_name, text| match txt_file::write_to_file(file_name.as_str(), text.as_str()) {
@@ -207,6 +280,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Returns text at path (file_name) as String
+
+        # Arguments
+        * 'file_name' - file path of txt file
+
+        # Return
+        starting text to be displayed on slint text editor
     */
     app.global::<BackendTextEditor>().on_read_file(|file_name| {
         if file_name == "err".to_string() {
@@ -223,6 +302,13 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Returns new_size as i32 if new_size is a number between 1 & 256
+        
+        # Arguments
+        * 'new_size' - size of display font user desires
+        * 'old_font' - previously displayed font
+
+        # Return
+        return new font size to slint text editor
     */
     app.global::<BackendTextEditor>()
         .on_set_font_size(|new_size, old_font| {
@@ -255,12 +341,19 @@ fn main() -> Result<()> {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     /* CALLBACK:
-       Saves local data when application window is closed
+        Saves local data when application window is closed
+
+        # Arguments
+        N / A
+
+        # Return
+        slint command to close window
     */
     app.window().on_close_requested({
         let cloned_file_manager = file_manager.clone();
         move || {
-            let file_manager = cloned_file_manager.lock().unwrap();
+            let mut file_manager = cloned_file_manager.lock().unwrap();
+            file_manager.add_file();
             let files = file_manager.get_files();
 
             let json = serde_json::to_string(&files).unwrap();
