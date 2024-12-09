@@ -48,7 +48,7 @@ fn main() -> Result<()> {
         move || {
             let app = app_weak.unwrap();
             let mut file_manager = cloned_file_manager.lock().unwrap();
-            if file_manager.add_file() {
+            if file_manager.add_new_file() {
                 app.set_active_page(1);
             }
         }
@@ -66,6 +66,7 @@ fn main() -> Result<()> {
             app.set_active_page(1);
             println!("{}", file_path.to_string());
             file_manager.set_cur_path(file_path.to_string());
+            file_manager.set_cur_file_info(file_path.to_string());
         }
     });
 
