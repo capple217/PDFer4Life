@@ -30,9 +30,9 @@ fn main() {
 
     // Construct the destination file path
     let dir_path = Path::new(&out_dir).parent().unwrap();
-    print!("src: {}", source_file);
+    println!("src: {}, outdir:{}", source_file, out_dir);
 
-    // fs::rename(source_file, dir_path);
+    fs::rename(Path::new(&source_file), dir_path);
 
     let mut file = File::create(filename).unwrap(); 
     let data = fs::read_to_string(&source_file).unwrap();
