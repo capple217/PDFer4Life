@@ -14,10 +14,24 @@ mod txt_file;
 use serde_json::Result; // , Value}
 use slint::{Image, Rgba8Pixel, SharedPixelBuffer};
 use std::sync::{Arc, Mutex};
+use std::env;
 // use std::{clone, vec};
 
 fn main() -> Result<()> {
     //ideally result should also have: Result<(), slint::PlatformError>
+
+    // let target_os = env::consts::OS;
+    // let lib_path = match target_os.as_str() {
+    //     "windows" => "pdfium-windows.dll",
+    //     "linux" => "libpdfium.so",
+    //     "macos" => "pdfium-mac.dylib",
+    //     _ => panic!("Unsupported OS"),
+    // };
+
+    // let out_dir = env::var("OUT_DIR").unwrap();
+    // let dest_path = Path::new(&out_dir).join(lib_path);
+    // fs::copy(lib_path, dest_path).expect("Failed to copy Pdfium binary");
+
 
     // Application window -- define all global callbacks on this window
     let app = App::new().unwrap();
