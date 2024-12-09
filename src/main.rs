@@ -176,6 +176,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
        Renders current page of PDF and returns as Slint image
+
+        # Arguments
+        N/A
+
+        # Return
+        * A Slint rgba8 type which is used to display pdf image
     */
     app.global::<BackendPDF>().on_display({
         let cloned_file_manager = file_manager.clone();
@@ -208,6 +214,12 @@ fn main() -> Result<()> {
 
     /* CALLBACK:
        Navigates to the previous page in the pdf file
+
+        # Arguments
+        N/A
+
+        # Return
+        N / A
     */
     app.global::<BackendPDF>().on_navigate_previous({
         let cloned_file_manager = file_manager.clone();
@@ -222,6 +234,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
        Navigates to the next page in the pdf file
+       
+        # Arguments
+        N/A
+
+        # Return
+        N / A
     */
     app.global::<BackendPDF>().on_navigate_next({
         let cloned_file_manager = file_manager.clone();
@@ -243,12 +261,25 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Prompt user to select txt file and returns path as String
+
+        # Arguments
+        N/A
+
+        # Return
+        N / A
     */
     app.global::<BackendTextEditor>()
         .on_open_text_file(|| txt_file::open_file_txt().into());
 
     /*  CALLBACK:
         Saves text to specified file path (file_name)
+
+        # Arguments
+        * 'file_name' - file path of txt file
+        * 'text' - data to be stored in txt file
+
+        # Return
+        N / A
     */
     app.global::<BackendTextEditor>().on_save_file(
         |file_name, text| match txt_file::write_to_file(file_name.as_str(), text.as_str()) {
@@ -259,6 +290,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Returns text at path (file_name) as String
+
+        # Arguments
+        * 'file_name' - file path of txt file
+
+        # Return
+        starting text to be displayed on slint text editor
     */
     app.global::<BackendTextEditor>().on_read_file(|file_name| {
         if file_name == "err".to_string() {
@@ -275,6 +312,13 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Returns new_size as i32 if new_size is a number between 1 & 256
+        
+        # Arguments
+        * 'new_size' - size of display font user desires
+        * 'old_font' - previously displayed font
+
+        # Return
+        return new font size to slint text editor
     */
     app.global::<BackendTextEditor>()
         .on_set_font_size(|new_size, old_font| {
@@ -307,7 +351,13 @@ fn main() -> Result<()> {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     /* CALLBACK:
-       Saves local data when application window is closed
+        Saves local data when application window is closed
+
+        # Arguments
+        N / A
+
+        # Return
+        slint command to close window
     */
     app.window().on_close_requested({
         let cloned_file_manager = file_manager.clone();
