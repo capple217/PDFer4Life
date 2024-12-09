@@ -29,30 +29,8 @@ fn main() {
     };
 
     // Construct the destination file path
-    let dir_path = Path::new(&out_dir).parent().unwrap().join(filename);
+    let dir_path = Path::new(&out_dir).parent().unwrap().parent().unwrap().parent().unwrap().join(filename);
     println!("src: {}, outdir:{}", source_file, out_dir);
 
     fs::rename(source_file, dir_path);
-
-    // let mut file = File::create(filename).unwrap(); 
-    // let data = fs::read_to_string(&source_file).unwrap();
-    // file.write_all(data.as_bytes()); 
-
-    // // Copy the file
-    // fs::copy(source_file, &dest_path)
-    //     .unwrap_or_else(|e: std::io::Error| panic!("Failed to copy {}: {}", source_file, e));
-
-    // println!("cargo:rerun-if-changed={}", source_file); // Ensures the build script reruns if the source file changes
 }
-
-// let target_os = env::consts::OS;
-// let lib_path = match target_os {
-//     "windows" => "lib/pdfium.dll",
-//     "linux" => "lib/libpdfium.so",
-//     "macos" => "lib/libpdfium.dylib",
-//     _ => panic!("Unsupported OS"),
-// };
-
-// let out_dir = env::var("OUT_DIR").unwrap();
-// let dest_path = Path::new(&out_dir).join(lib_path);
-// fs::copy(lib_path, dest_path).expect("Failed to copy Pdfium binary");
