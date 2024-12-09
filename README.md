@@ -1,6 +1,6 @@
 # PDFer4Life
 
-Group Name: PDFer4Life
+Group Name: PDFer
 
 Group Members: Fasih Javed (fasihj2), Mathew Randal (randal3), Amey Gupta (amey2)
 

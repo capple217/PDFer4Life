@@ -1,21 +1,28 @@
+/*
+Project Name: PDFer
+
+Authors: Fasih Javed, Mathew Randal, Amey Gupta
+
+Description: This project will be a lightweight pdf viewer allowing split screen reading and note taking, similar to a library program.
+
+Last Updated: 12/08/24
+
+Copyright Disclaimer: This code is open source and free to use with proper attributions
+*/
+
 // Prevent console window in addition to Slint window in Windows release builds when, e.g., starting the app via file manager. Ignored on other platforms.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 //imports
 use pdfium_render::prelude::*;
-// use std::error::Error;
-
 slint::include_modules!();
 use slint::VecModel;
 mod interface;
 mod txt_file;
-// mod pdf_renderer;
-// use serde::{Deserialize, Serialize};
-use serde_json::Result; // , Value}
+use serde_json::Result;
 use slint::{Image, Rgba8Pixel, SharedPixelBuffer};
 use std::sync::{Arc, Mutex};
 use std::env;
-// use std::{clone, vec};
 
 fn main() -> Result<()> {
     //ideally result should also have: Result<(), slint::PlatformError>
@@ -55,6 +62,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Prompts user to select PDF, then sets the active page to split-page
+        
+        # Arguments
+        N/A
+
+        # Return
+        N/A
     */
     app.global::<AppService>().on_open_file({
         let app_weak = app.as_weak();
@@ -70,6 +83,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         User selected PDF from recents, then sets the active page to split-page
+        
+        # Arguments
+        N/A
+
+        # Return
+        N/A
     */
     app.global::<AppService>().on_open_recent_file({
         let app_weak = app.as_weak();
@@ -86,6 +105,12 @@ fn main() -> Result<()> {
 
     /*  CALLBACK:
         Returns all previously opened PDFs as slint vector for use in opening-page recent pdf buttons
+        
+        # Arguments
+        N/A
+
+        # Return
+        * A Slint vector type with info for files previously opened
     */
     app.global::<AppService>().on_get_recent_files({
         let cloned_file_manager = file_manager.clone();
@@ -105,7 +130,13 @@ fn main() -> Result<()> {
     });
 
     /* CALLBACK:
-       Returns the number of previously opened PDFs
+        Returns the number of previously opened PDFs
+
+        # Arguments
+        N/A
+
+        # Return
+        number of files previously opened
     */
     app.global::<AppService>().on_get_num_recent_files({
         let cloned_file_manager = file_manager.clone();
@@ -121,7 +152,13 @@ fn main() -> Result<()> {
     });
 
     /* CALLBACK:
-       Returns trimmed file name if name exceeds max length
+        Returns trimmed file name if name exceeds max length
+
+        # Arguments
+        * 'name' - name of pdf files currently on record
+
+        # Return
+        * a shorted version of the pdf name
     */
     let max_name_len = 15;
     app.global::<AppService>().on_trim_file_name(move |name| {
