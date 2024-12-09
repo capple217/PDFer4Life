@@ -1,10 +1,10 @@
 import { TextEdit, Button } from "std-widgets.slint";
 import { TextEditor } from "text-editor.slint";
 import {PDFRender} from "pdf-render.slint";
-import {Page, PDFerPalette} from "common.slint";
+import {PDFerPalette} from "common.slint";
 
 
-export component SplitPage inherits Page {
+export component SplitPage inherits Rectangle {
     background: PDFerPalette.background;
     border-width: PDFerPalette.page-border-width;
     border-color: black;

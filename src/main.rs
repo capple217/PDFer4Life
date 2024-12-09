@@ -275,7 +275,8 @@ fn main() -> Result<()> {
     app.window().on_close_requested({
         let cloned_file_manager = file_manager.clone();
         move || {
-            let file_manager = cloned_file_manager.lock().unwrap();
+            let mut file_manager = cloned_file_manager.lock().unwrap();
+            file_manager.add_file();
             let files = file_manager.get_files();
 
             let json = serde_json::to_string(&files).unwrap();

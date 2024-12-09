@@ -1,7 +1,7 @@
 import { TextEdit, Button, Switch } from "std-widgets.slint";
-import {Page, BackendTextEditor, CustomButton, PDFerPalette, ToggleSwitch} from "common.slint";
+import {BackendTextEditor, CustomButton, PDFerPalette, ToggleSwitch} from "common.slint";
 
-export component TextEditor inherits Page {
+export component TextEditor inherits Rectangle {
     in-out property <string> notes-text: "";
     in-out property <string> txt-file-path: "";
     in-out property <int> text-font-size:12;

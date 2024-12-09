@@ -74,7 +74,7 @@ impl FileManager {
     pub fn add_file(& mut self) -> bool {
         //open file from system
         if (self.cur_file_path != "../assets/blank.pdf".to_string()) {
-            self.files.push(FileInfo::new(&self.cur_file_info.get_filepath(), &self.cur_file_info.get_name()));
+            self.files.insert(0, FileInfo::new(&self.cur_file_info.get_filepath(), &self.cur_file_info.get_name()));
             return true;
         } else {
             return false;
@@ -104,14 +104,6 @@ impl FileManager {
     pub fn set_cur_page(&mut self, num:u16) {
         self.cur_file_page = num;
     }
-
-
-    // fn delete_file(&mut self, name: &str) {
-        // if let Some(pos) = self.files.iter().position(|file| file.name = name) {
-        //     self.files.remove(pos);
-        // }
-    // }
-
 
     pub fn get_files(&self) -> &Vec<FileInfo> {
         return &self.files;
