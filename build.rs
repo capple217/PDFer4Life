@@ -29,14 +29,14 @@ fn main() {
     };
 
     // Construct the destination file path
-    let dir_path = Path::new(&out_dir).parent().unwrap();
+    let dir_path = Path::new(&out_dir).parent().unwrap().join(filename);
     println!("src: {}, outdir:{}", source_file, out_dir);
 
-    fs::rename(Path::new(&source_file), dir_path);
+    fs::rename(source_file, dir_path);
 
-    let mut file = File::create(filename).unwrap(); 
-    let data = fs::read_to_string(&source_file).unwrap();
-    file.write_all(data.as_bytes()); 
+    // let mut file = File::create(filename).unwrap(); 
+    // let data = fs::read_to_string(&source_file).unwrap();
+    // file.write_all(data.as_bytes()); 
 
     // // Copy the file
     // fs::copy(source_file, &dest_path)
