@@ -3,15 +3,13 @@ use std::fs;
 use std::path::Path;
 
 fn main() {
-    slint_build::compile("ui/slint-exports.slint").expect("Slint build failed");
+    slint_build::compile("ui/app.slint").expect("Slint build failed");
 
 
 
     // Get the build output directory
     let out_dir = env::var("OUT_DIR").expect("OUT_DIR not set");
     println!("out_dir: {}", out_dir);
-
-    println!("file: {}", fs::read_to_string("./lib/test.txt").unwrap());
 
     // Define the source file path (relative to the project root)
     let target_os = env::consts::OS;
