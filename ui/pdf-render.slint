@@ -19,6 +19,7 @@ export component PDFRender inherits Window {
 
             CustomButton {
                 text: "Previous";
+                font-size: 25px;
                 // enabled: has_previous;
                 clicked => {
                     BackendPDF.navigate-previous();
@@ -26,15 +27,18 @@ export component PDFRender inherits Window {
                     page = BackendPDF.get-page();
                 }
             }
-
-            Text {
-                color: PDFerPalette.text-primary;
-                font-size: 20px;
-                text: page;
+            Rectangle {
+                Text {
+                    color: PDFerPalette.text-primary;
+                    font-size: 20px;
+                    text: page;
+                }
             }
+
 
             CustomButton {
                 text: "Next";
+                font-size: 25px;
                 // enabled: has_next;
                 clicked => {
                     BackendPDF.navigate-next();

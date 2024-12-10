@@ -6,56 +6,54 @@ export component TextEditor inherits Rectangle {
     in-out property <string> txt-file-path: "";
     in-out property <int> text-font-size:12;
     background: PDFerPalette.background;
-    border-width: PDFerPalette.page-border-width;
-    border-color: PDFerPalette.secondary;
-    padding: PDFerPalette.page-border-width;
+    // border-width: PDFerPalette.page-border-width;
+    // border-color: PDFerPalette.secondary;
+    // padding: PDFerPalette.page-border-width;
     VerticalLayout {
         height: 100%;
         HorizontalLayout { // font settings, save & load
-            // change font
-            Font := TextEdit {
-                width: 10%;
-                wrap: TextWrap.word-wrap;
-                min-height: 10px;
-                font-size: 12px;
-                horizontal-alignment: TextHorizontalAlignment.center;
-                text: text-font-size;
-                padding: 0px;
-                edited(text) => {
-                    text-font-size = BackendTextEditor.set-font-size(text, text-font-size);
-                    Font.text = text-font-size;
-                    TE.font-size = text-font-size * 1px;
-                }
-            }
-
-            CustomButton {
-                text: "+";
-                width: 10%;
-                font-size: 20px;
-                padding-top: 0px;
-                padding-bottom: 0px;
-                clicked => {
-                    text-font-size += 1;
-                    TE.font-size = text-font-size * 1px;
-                    Font.text = text-font-size;
-                }
-            }
-
+            height: root.height * 0.05;
             CustomButton {
                 text: "-";
-                width: 10%;
-                font-size: 20px;
+                width: 6%;
+                font-size: 25px;
                 padding-top: 0px;
                 padding-bottom: 0px;
                 clicked => {
+                    // text-font-size = BackendTextEditor.set-font-size(text-font-size, text-font-size -1);
                     text-font-size -= 1;
                     TE.font-size = text-font-size * 1px;
                     Font.text = text-font-size;
                 }
             }
 
-            Button {
+            Rectangle {
+                width: 5%;
+                Font:= Text{
+                    color: PDFerPalette.text-primary;
+                    font-size:12px;
+                    text: text-font-size;
+                }
+            }
+
+            CustomButton {
+                text: "+";
+                width: 6%;
+                font-size: 25px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                clicked => {
+                    // text-font-size = BackendTextEditor.set-font-size(text-font-size, text-font-size+1);
+                    text-font-size +=1;
+                    TE.font-size = text-font-size * 1px;
+                    Font.text = text-font-size;
+                }
+            }
+
+            Rectangle {width: 10%;}
+            CustomButton {
                 text: "Save";
+                font-size: 25px;
                 clicked => {
                     if (txt-file-path == "") {
                         txt-file-path = BackendTextEditor.open-text-file();
@@ -64,8 +62,9 @@ export component TextEditor inherits Rectangle {
                 }
             }
 
-            Button {
+            CustomButton {
                 text: "Load File";
+                font-size: 25px;
                 clicked => {
                     if (txt-file-path != "") {
                         BackendTextEditor.save-file(txt-file-path, notes-text);
@@ -76,18 +75,22 @@ export component TextEditor inherits Rectangle {
                 }
             }
 
-            ToggleSwitch {
-                text: "Dark Mode";
-                checked: PDFerPalette.dark-mode;
-                toggled => {
-                    PDFerPalette.dark-mode = !PDFerPalette.dark-mode;
+            Rectangle {
+                ToggleSwitch {
+                    text: "Dark";
+                    checked: PDFerPalette.dark-mode;
+                    toggled => {
+                        PDFerPalette.dark-mode = !PDFerPalette.dark-mode;
+                    }
                 }
             }
+
         }
 
         TE := TextEdit {
             font-size: text-font-size * 1px;
-            height: 95%;
+            has-focus: true;
+            height: 100%;
             width: 48%;
             text: notes-text;
             edited(text) => {
