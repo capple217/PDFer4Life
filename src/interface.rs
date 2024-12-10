@@ -73,7 +73,7 @@ impl FileManager {
 
     pub fn add_file(& mut self) -> bool {
         //open file from system
-        if (self.cur_file_path != "../assets/blank.pdf".to_string()) {
+        if self.cur_file_path != "../assets/blank.pdf".to_string() {
             self.files.insert(0, FileInfo::new(&self.cur_file_info.get_filepath(), &self.cur_file_info.get_name()));
             return true;
         } else {

@@ -84,13 +84,37 @@ export component OpeningPage inherits Rectangle {
             }
         }
 
-        Rectangle{
+        HorizontalLayout{
             // padding-left: root.width * 0.075;
-            Text {
-                text: "Recent files:";
-                color: PDFerPalette.text-primary;
-                height: root.height * 0.05;
-                font-size: 30px;
+            Rectangle {
+                padding-top: root.height * 0.02;
+                Rectangle {
+                    background: PDFerPalette.primary;
+                    height: root.height * 0.01;
+                    // border-radius: 20px;
+                }
+            }
+            CustomButton {
+                border-width: 0px;
+                background: PDFerPalette.primary;
+                padding-left: 10px;
+                padding-right: 10px;
+                Text {
+                    text: "Recent files";
+                    color: PDFerPalette.text-primary;
+                    height: root.height * 0.05;
+                    font-size: 30px;
+                }
+            }
+
+
+            Rectangle {
+                padding-top: root.height * 0.02;
+                Rectangle {
+                    background: PDFerPalette.primary;
+                    height: root.height * 0.01;
+                    // border-radius: 20px;
+                }
             }
         }
 

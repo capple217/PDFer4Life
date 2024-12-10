@@ -2,11 +2,12 @@
 // convert to image
 
 // import { } from "std-widgets.slint";
-import { BackendPDF, CustomButton } from "common.slint";
+import { BackendPDF, CustomButton, PDFerPalette } from "common.slint";
 import { Button } from "std-widgets.slint";
 
 export component PDFRender inherits Window {
     in-out property <image> current_image: BackendPDF.display();
+    in-out property <string> page: BackendPDF.get-page();
     // in-out property <bool> has_previous;
     // in-out property <bool> has_next;
 
@@ -22,7 +23,14 @@ export component PDFRender inherits Window {
                 clicked => {
                     BackendPDF.navigate-previous();
                     current_image = BackendPDF.display();
+                    page = BackendPDF.get-page();
                 }
+            }
+
+            Text {
+                color: PDFerPalette.text-primary;
+                font-size: 20px;
+                text: page;
             }
 
             CustomButton {
@@ -31,6 +39,7 @@ export component PDFRender inherits Window {
                 clicked => {
                     BackendPDF.navigate-next();
                     current_image = BackendPDF.display();
+                    page = BackendPDF.get-page();
                 }
             }
         }
