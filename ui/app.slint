@@ -1,7 +1,7 @@
-import {Button, VerticalBox, HorizontalBox} from "std-widgets.slint";
 import {OpeningPage} from "opening-page.slint";
 import {SplitPage} from "split-page.slint";
 import {PDFerPalette} from "common.slint";
+export {AppService, BackendPDF, BackendTextEditor, PDFerPalette} from "common.slint";
 
 export component App inherits Window {
     in property <int> active-page : 0;
@@ -16,6 +16,4 @@ export component App inherits Window {
     if (active-page == 0) : OpeningPage {}
 
     if (active-page == 1) : SplitPage {}
-
-
 }

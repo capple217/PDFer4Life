@@ -245,6 +245,20 @@ fn main() -> Result<()> {
         }
     });
 
+
+    app.global::<BackendPDF>().on_get_page({
+        let cloned_file_manager = file_manager.clone();
+        move || {
+            let mut file_manager = cloned_file_manager.lock().unwrap();
+            let pdfium = Pdfium::default();
+            let file_path = file_manager.get_cur_path().unwrap();
+            let document = pdfium.load_pdf_from_file(file_path.as_str(), None).unwrap();
+            let cur = file_manager.get_cur_page();
+            let total: u16 = document.pages().len().into();
+            format!("{} of {}", cur, total).into()
+        }
+    });
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // CALLBACKS USED IN TEXT EDITOR:
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

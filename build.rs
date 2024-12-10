@@ -1,20 +1,15 @@
 use std::env;
 use std::fs;
-use std::fs::File;
 use std::path::Path;
-use std::io::Write;
-use std::io;
 
 fn main() {
-    slint_build::compile("ui/slint-exports.slint").expect("Slint build failed");
+    slint_build::compile("ui/app.slint").expect("Slint build failed");
 
 
 
     // Get the build output directory
     let out_dir = env::var("OUT_DIR").expect("OUT_DIR not set");
     println!("out_dir: {}", out_dir);
-
-    println!("file: {}", fs::read_to_string("./lib/test.txt").unwrap());
 
     // Define the source file path (relative to the project root)
     let target_os = env::consts::OS;
@@ -32,5 +27,5 @@ fn main() {
     let dir_path = Path::new(&out_dir).parent().unwrap().parent().unwrap().parent().unwrap().join(filename);
     println!("src: {}, outdir:{}", source_file, out_dir);
 
-    fs::rename(source_file, dir_path);
+    let _ = fs::rename(source_file, dir_path);
 }

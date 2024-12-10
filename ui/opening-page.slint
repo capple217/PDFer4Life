@@ -1,9 +1,9 @@
 import {Button, VerticalBox, HorizontalBox, Palette, GridBox, Switch, ScrollView} from "std-widgets.slint";
-import {AppService, PDFerPalette, CustomButton} from "common.slint";
+import {AppService, PDFerPalette, CustomButton, ToggleSwitch} from "common.slint";
 
 component PDFButtons inherits ScrollView {
     in property <int> vp-height: ((floor(AppService.get-num-recent-files() / 3) + 1) / 1px) * root.height * 0.225;
-    height: 60%;
+    height: 55%;
     viewport-height: vp-height * 1px;
     in property <[{name: string, path: string}]> recent_files: AppService.get-recent-files();
     for file[i] in recent_files: r := Rectangle {
@@ -25,7 +25,7 @@ component PDFButtons inherits ScrollView {
 
 export component OpeningPage inherits Rectangle {
     background: PDFerPalette.background;
-    animate background{
+    animate background {
         duration: 300ms;
         easing: ease;
     }
@@ -35,12 +35,11 @@ export component OpeningPage inherits Rectangle {
             padding: 25px;
             spacing: 30px;
             Rectangle {
-            // padding-left: root.width*0.37;
             padding-top: 20px;
                 height: Img.height * 1.2;
                 Img := Image {
                     width: root.width * 0.25;
-                    source: PDFerPalette.dark-mode? @image-url("../assets/PDFer_Logo_Dark.png"): @image-url("../assets/PDFer_Logo_Light.png");
+                    source: PDFerPalette.dark-mode ? @image-url("../assets/PDFer_Logo_Dark.png") : @image-url("../assets/PDFer_Logo_Light.png");
                 }
             }
 
@@ -53,14 +52,12 @@ export component OpeningPage inherits Rectangle {
                         height: 100px;
                         border-width: 10px;
                         border-radius: 30px;
-                        // border-color: black;
-                        // background: PDFerPalette.primary;
                         hb := HorizontalBox {
                             alignment: center;
                             padding: 20px;
                             padding-top: hb.height * 0.15;
                             Image {
-                                source: PDFerPalette.dark-mode? @image-url("../assets/upload_symbol_dark.png"): @image-url("../assets/upload_symbol_light.png");
+                                source: PDFerPalette.dark-mode ? @image-url("../assets/upload_symbol_dark.png") : @image-url("../assets/upload_symbol_light.png");
                                 vertical-alignment: ImageVerticalAlignment.center;
                                 horizontal-alignment: ImageHorizontalAlignment.left;
                                 height: hb.height * 0.7;
@@ -84,15 +81,43 @@ export component OpeningPage inherits Rectangle {
             }
         }
 
-        pdfb:=PDFButtons { }
+        HorizontalLayout {
+            Rectangle {
+                padding-top: root.height * 0.02;
+                Rectangle {
+                    background: PDFerPalette.primary;
+                    height: root.height * 0.01;
+                }
+            }
+
+            CustomButton {
+                border-width: 0px;
+                background: PDFerPalette.primary;
+                Text {
+                    text: " Recent files ";
+                    color: PDFerPalette.text-primary;
+                    height: root.height * 0.05;
+                    font-size: 30px;
+                }
+            }
+
+            Rectangle {
+                padding-top: root.height * 0.02;
+                Rectangle {
+                    background: PDFerPalette.primary;
+                    height: root.height * 0.01;
+                }
+            }
+        }
+
+        pdfb := PDFButtons { }
 
         Rectangle {
-            Switch {
+            ToggleSwitch {
                 text: "Dark Mode";
                 checked: PDFerPalette.dark-mode;
                 toggled => {
                     PDFerPalette.dark-mode = !PDFerPalette.dark-mode;
-                    // pdfb.viewport-height = ((floor(AppService.get-num-recent-files() / 3) + 1)) * root.height * 0.225
                 }
             }
         }

@@ -1,36 +1,38 @@
-// Get the render of the pdf
-// convert to image
-
-// import { } from "std-widgets.slint";
-import { BackendPDF, CustomButton } from "common.slint";
-import { Button } from "std-widgets.slint";
+import { BackendPDF, CustomButton, PDFerPalette } from "common.slint";
 
 export component PDFRender inherits Window {
     in-out property <image> current_image: BackendPDF.display();
-    // in-out property <bool> has_previous;
-    // in-out property <bool> has_next;
+    in-out property <string> page: BackendPDF.get-page();
 
     VerticalLayout {
-        // spacing: 10px;
         HorizontalLayout {
             spacing: 10px;
             height: root.height * 0.05;
 
             CustomButton {
                 text: "Previous";
-                // enabled: has_previous;
+                font-size: 25px;
                 clicked => {
                     BackendPDF.navigate-previous();
                     current_image = BackendPDF.display();
+                    page = BackendPDF.get-page();
+                }
+            }
+            Rectangle {
+                Text {
+                    color: PDFerPalette.text-primary;
+                    font-size: 20px;
+                    text: page;
                 }
             }
 
             CustomButton {
                 text: "Next";
-                // enabled: has_next;
+                font-size: 25px;
                 clicked => {
                     BackendPDF.navigate-next();
                     current_image = BackendPDF.display();
+                    page = BackendPDF.get-page();
                 }
             }
         }

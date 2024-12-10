@@ -1,5 +1,3 @@
-import { Palette, Switch } from "std-widgets.slint";
-
 struct ButtonColors  {
     border: color,
     base: color,
@@ -16,44 +14,25 @@ struct ModeColors {
     destructive: color,
 }
 
-export global PDFerPalette  {
-    // in property <bool> dark-mode: Palette.color-scheme == ColorScheme.dark;
+export global PDFerPalette {
     in-out property <bool> dark-mode: false;
-
-
     property <ModeColors> light-mode-colors: {
         background: #E0DDCF,
         primary: #EFFBF0,
         secondary: #BAB5B5,
         text-primary: #000,
-        text-secondary: #2D232E,
-        destructive: #FF3B30,
     };
-
     property <ModeColors> dark-mode-colors: {
         background: #1A1F24,
         primary: #0A0A0A,
         secondary: #151415,
         text-primary: #E0DDCF,
-        text-secondary: #F1F0EA,
-        destructive: #F55D3E,
     };
-
     out property <color> background: dark-mode ? dark-mode-colors.background : light-mode-colors.background;
     out property <color> primary: dark-mode ? dark-mode-colors.primary : light-mode-colors.primary;
     out property <color> secondary: dark-mode ? dark-mode-colors.secondary : light-mode-colors.secondary;
     out property <color> text-primary: dark-mode ? dark-mode-colors.text-primary : light-mode-colors.text-primary;
-    out property <color> text-secondary: dark-mode ? dark-mode-colors.text-secondary : light-mode-colors.text-secondary;
-    out property <color> destructive: dark-mode ? dark-mode-colors.destructive : light-mode-colors.destructive;
 
-    out property <length> base-font-size: 16px;
-    out property <length> button-width: 130px;
-    out property <length> button-height: button-width + 30px;
-    out property <length> side-bar-width: 1000px;
-    out property <length> side-bar-margin: 500px;
-    out property <length> page-border-width: 10px;
-
-    out property <color> primary-push-button-base: background;
     out property <color> button-border: black;
     out property <ButtonColors> primary-push-button-colors: {
         border: button-border,
@@ -70,17 +49,18 @@ export component CustomButton inherits Rectangle {
     border-radius: root.height / 3.5;
     border-width: 5px;
     border-color: PDFerPalette.primary-push-button-colors.border;
-    background: touch.pressed ? PDFerPalette.primary-push-button-colors.pressed : touch.has-hover ? PDFerPalette.primary-push-button-colors.hovered :  PDFerPalette.primary-push-button-colors.base;
+    background: touch.pressed ? PDFerPalette.primary-push-button-colors.pressed : touch.has-hover ? PDFerPalette.primary-push-button-colors.hovered : PDFerPalette.primary-push-button-colors.base;
     animate background {
         duration: 100ms;
         easing: ease-out-quad;
     }
     min-width: txt.preferred-width + 5px;
     txt := Text {
-        x: (parent.width - self.width)/2;
-        y: (parent.height - self.height)/2;
-        color: touch.pressed ? PDFerPalette.text-primary : PDFerPalette.text-secondary;
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+        color: PDFerPalette.text-primary;
     }
+
     touch := TouchArea { }
 }
 
@@ -88,14 +68,12 @@ export component ToggleSwitch inherits Rectangle {
     callback toggled;
     in-out property <string> text;
     in-out property <bool> checked;
-    in-out property<bool> enabled <=> touch-area.enabled;
+    in-out property <bool> enabled <=> touch-area.enabled;
     height: 20px;
     horizontal-stretch: 0;
     vertical-stretch: 0;
-
     HorizontalLayout {
         spacing: 8px;
-
         Text {
             min-width: max(100px, self.preferred-width);
             text: root.text;
@@ -109,9 +87,8 @@ export component ToggleSwitch inherits Rectangle {
             border-width: 1px;
             border-radius: root.height / 2;
             border-color: self.background.darker(25%);
-            background: root.enabled ? (root.checked ? PDFerPalette.primary: PDFerPalette.secondary)  : PDFerPalette.secondary;
+            background: root.enabled ? (root.checked ? PDFerPalette.primary : PDFerPalette.secondary) : PDFerPalette.secondary;
             animate background { duration: 100ms; }
-
             bubble := Rectangle {
                 width: root.height - 8px;
                 height: bubble.width;
@@ -120,12 +97,12 @@ export component ToggleSwitch inherits Rectangle {
                 x: 4px + self.a * (indicator.width - bubble.width - 8px);
                 property <float> a: root.checked ? 1 : 0;
                 background: root.checked ? white : (root.enabled ? black : gray);
-                animate a, background { duration: 200ms; easing: ease;}
+                animate a, background {
+                    duration: 200ms;
+                    easing: ease;
+                }
             }
         }
-
-
-
     }
 
     touch-area := TouchArea {
@@ -140,8 +117,7 @@ export component ToggleSwitch inherits Rectangle {
     }
 }
 
-export global AppService  {
-    // This callback can be implemented in native code using the Slint API
+export global AppService {
     pure callback open-file();
     pure callback get-recent-files() -> [{path: string, name: string}];
     pure callback get-num-recent-files() -> int;
@@ -160,6 +136,5 @@ export global BackendPDF {
     pure callback navigate-previous();
     pure callback display() -> image;
     pure callback navigate-next();
+    pure callback get-page() -> string;
 }
-
-
