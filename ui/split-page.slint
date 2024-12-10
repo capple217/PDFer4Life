@@ -1,8 +1,6 @@
-import { TextEdit, Button } from "std-widgets.slint";
 import { TextEditor } from "text-editor.slint";
 import {PDFRender} from "pdf-render.slint";
 import {PDFerPalette} from "common.slint";
-
 
 export component SplitPage inherits Rectangle {
     background: PDFerPalette.background;
@@ -11,7 +9,6 @@ export component SplitPage inherits Rectangle {
     height: 100%;
     HorizontalLayout {
         PDFRender { }
-
         TextEditor { }
     }
 }

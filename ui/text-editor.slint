@@ -1,4 +1,4 @@
-import { TextEdit, Button, Switch } from "std-widgets.slint";
+import { TextEdit } from "std-widgets.slint";
 import {BackendTextEditor, CustomButton, PDFerPalette, ToggleSwitch} from "common.slint";
 
 export component TextEditor inherits Rectangle {
@@ -17,7 +17,6 @@ export component TextEditor inherits Rectangle {
                 padding-top: 0px;
                 padding-bottom: 0px;
                 clicked => {
-                    // text-font-size = BackendTextEditor.set-font-size(text-font-size, text-font-size -1);
                     text-font-size -= 1;
                     TE.font-size = text-font-size * 1px;
                     Font.text = text-font-size;
@@ -26,9 +25,9 @@ export component TextEditor inherits Rectangle {
 
             Rectangle {
                 width: 5%;
-                Font:= Text{
+                Font := Text {
                     color: PDFerPalette.text-primary;
-                    font-size:12px;
+                    font-size: 12px;
                     text: text-font-size;
                 }
             }
@@ -40,14 +39,16 @@ export component TextEditor inherits Rectangle {
                 padding-top: 0px;
                 padding-bottom: 0px;
                 clicked => {
-                    // text-font-size = BackendTextEditor.set-font-size(text-font-size, text-font-size+1);
-                    text-font-size +=1;
+                    text-font-size += 1;
                     TE.font-size = text-font-size * 1px;
                     Font.text = text-font-size;
                 }
             }
 
-            Rectangle {width: 10%;}
+            Rectangle {
+                width: 10%;
+            }
+
             CustomButton {
                 text: "Save";
                 font-size: 25px;
@@ -81,7 +82,6 @@ export component TextEditor inherits Rectangle {
                     }
                 }
             }
-
         }
 
         TE := TextEdit {
