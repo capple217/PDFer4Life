@@ -177,7 +177,7 @@ fn main() -> Result<()> {
         let cloned_file_manager = file_manager.clone();
         move || {
             let mut file_manager = cloned_file_manager.lock().unwrap();
-            let current_page = file_manager.get_cur_page();
+            let current_page = file_manager.get_cur_file_info().get_cur_page();
             let pdfium = Pdfium::default();
             let file_path = file_manager.get_cur_path().unwrap();
             let document = pdfium.load_pdf_from_file(file_path.as_str(), None).unwrap();
@@ -215,9 +215,9 @@ fn main() -> Result<()> {
         let cloned_file_manager = file_manager.clone();
         move || {
             let mut file_manager = cloned_file_manager.lock().unwrap();
-            let num = file_manager.get_cur_page();
+            let num = file_manager.get_cur_file_info().get_cur_page();
             if num > 0 {
-                file_manager.set_cur_page(num - 1);
+                file_manager.get_cur_file_info().set_cur_page(num - 1);
             }
         }
     });
@@ -238,9 +238,9 @@ fn main() -> Result<()> {
             let pdfium = Pdfium::default();
             let file_path = file_manager.get_cur_path().unwrap();
             let document = pdfium.load_pdf_from_file(file_path.as_str(), None).unwrap();
-            let num = file_manager.get_cur_page();
+            let num = file_manager.get_cur_file_info().get_cur_page();
             if num + 1 < document.pages().len().into() {
-                file_manager.set_cur_page(num + 1);
+                file_manager.get_cur_file_info().set_cur_page(num + 1);
             }
         }
     });
@@ -253,7 +253,7 @@ fn main() -> Result<()> {
             let pdfium = Pdfium::default();
             let file_path = file_manager.get_cur_path().unwrap();
             let document = pdfium.load_pdf_from_file(file_path.as_str(), None).unwrap();
-            let cur = file_manager.get_cur_page();
+            let cur = file_manager.get_cur_file_info().get_cur_page();
             let total: u16 = document.pages().len().into();
             format!("{} of {}", cur, total).into()
         }
